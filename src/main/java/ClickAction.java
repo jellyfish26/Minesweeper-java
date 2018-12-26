@@ -1,3 +1,4 @@
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 class ClickAction {
@@ -45,10 +46,19 @@ class ClickAction {
         }
         System.out.println("finish " + clickBomb);
         MineSweeper newGame = new MineSweeper();
+        GenerateDialog result = new GenerateDialog();
         if (clickBomb) {
-            newGame.executionApplication(nowStage);
+            if (result.resultDialog("あなたの負けです。", "リザルト") == ButtonType.YES) {
+                newGame.executionApplication(nowStage);
+            } else{
+                System.exit(0);
+            }
         } else {
-            newGame.executionApplication(nowStage);
+            if (result.resultDialog("あなたの勝ちです。", "リザルト") == ButtonType.YES) {
+                newGame.executionApplication(nowStage);
+            } else{
+                System.exit(0);
+            }
         }
     }
 }
