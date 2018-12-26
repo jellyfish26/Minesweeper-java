@@ -5,16 +5,22 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MineSweeper extends Application {
+    private Stage nowStage;
 
     @Override
     public void start(Stage primaryStage) {
-        Scene scene = new Scene(generateMineSweeperFiled());
-        primaryStage.setTitle("マインスイーパー");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        executionApplication(primaryStage);
     }
 
-    private Parent generateMineSweeperFiled() {
+    void executionApplication(Stage continuationStage) {
+        nowStage = continuationStage;
+        Scene scene = new Scene(generateMineSweeperField());
+        nowStage.setTitle("マインスイーパー");
+        nowStage.setScene(scene);
+        nowStage.show();
+    }
+
+    private Parent generateMineSweeperField() {
         GenerateDialog initialSettingDialog = new GenerateDialog();
         int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。", "フィールドの設定", "入力");
         System.out.println(vertical); // debug
@@ -26,7 +32,7 @@ public class MineSweeper extends Application {
         Pane displayLayout = new Pane();
         displayLayout.setPrefSize(750, 750);
         FieldCreation fieldCreation = new FieldCreation();
-        fieldCreation.filedInitialization(vertical, width, numberOfBombs);
+        fieldCreation.fieldInitialization(nowStage, vertical, width, numberOfBombs);
         fieldCreation.AddTileToPane(vertical, width, displayLayout);
         return displayLayout;
     }
