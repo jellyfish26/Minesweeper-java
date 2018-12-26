@@ -1,10 +1,13 @@
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.util.Random;
 
@@ -12,6 +15,7 @@ public class FieldCreation {
 
     public Tile[][] filedTiles;
     public int[][] numberOfSurroundingBombs;
+    public boolean[][] tileOpenCheck;
     private final int rectangleVertical = 50;
     private final int rectangleWidth = 50;
     private final int BOMB = 9;
@@ -27,9 +31,9 @@ public class FieldCreation {
                 int surroundBomb = numberOfSurroundingBombs[verticalCoordinate][widthCoordinate];
                 System.out.print(surroundBomb);
                 if (surroundBomb == BOMB) {
-                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile("B");
+                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile("B", verticalCoordinate, widthCoordinate);
                 } else {
-                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb));
+                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb), verticalCoordinate, widthCoordinate);
                 }
             }
             System.out.println();
@@ -67,18 +71,38 @@ public class FieldCreation {
         }
     }
 
-    private class Tile extends StackPane {
-        private Text tileContentText = new Text();
+    public class Tile extends StackPane {
+        Text tileContentText = new Text();
+        private ClickAction clickAction = new ClickAction();
+        String titleInText;
+        Boolean tileOpenCHeck;
+        private int verticalCoordinate;
+        private int widthCoordinate;
 
-        Tile (String tileInText) {
+        Tile (String tile, int vertical, int width) {
             Rectangle tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
+            titleInText = tile;
+            tileOpenCHeck = false;
+            verticalCoordinate = vertical;
+            widthCoordinate = width;
             tileBorder.setFill(null);
             tileBorder.setStroke(Color.BLACK);
-            tileContentText.setText(tileInText);
-            tileContentText.setFont(Font.font(25));
+            tileContentText.setText("");
+            tileContentText.setFont(Font.font(30));
 
             setAlignment(Pos.CENTER);
             getChildren().addAll(tileBorder, tileContentText);
+
+            setOnMouseClicked(this::onMouseClick);
+        }
+
+        private void onMouseClick(MouseEvent event) {
+            System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
+            if (titleInText.equals("B")) {
+                clickAction.clickBomb(filedTiles);
+            } else {
+                clickAction.openTilesOfZero(filedTiles, numberOfSurroundingBombs, verticalCoordinate, widthCoordinate);
+            }
         }
     }
 
