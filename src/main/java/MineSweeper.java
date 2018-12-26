@@ -20,8 +20,14 @@ public class MineSweeper extends Application {
         System.out.println(vertical); // debug
         int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。", "フィールドの設定", "入力");
         System.out.println(width);
+        int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください", "爆弾の設定", "入力");
+        System.out.println(numberOfBombs);
+
         Pane displayLayout = new Pane();
-        displayLayout.setPrefSize(500, 500);
+        displayLayout.setPrefSize(750, 750);
+        FieldCreation fieldCreation = new FieldCreation();
+        fieldCreation.filedInitialization(vertical, width, numberOfBombs);
+        fieldCreation.AddTileToPane(vertical, width, displayLayout);
         return displayLayout;
     }
 }

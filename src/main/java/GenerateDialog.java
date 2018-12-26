@@ -2,9 +2,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 
-public class GenerateDialog {
+class GenerateDialog {
     private String DO_NOT_QUIT_STRING = "7AE562B7CE81EA1218A088F6C4104F76D9F16027D2022DE2CE536C5727BF7C74850D6E3C6260A257A205ABC05C3126372DF807F9E73654AED7A70847E5DCA2B5";
-    public int  InputNumberDialog(String header, String title, String content) {
+    int  InputNumberDialog(String header, String title, String content) {
         TextInputDialog inputDialog = new TextInputDialog();
         inputDialog.setHeaderText(header);
         inputDialog.setTitle(title);
