@@ -1,28 +1,18 @@
-import javafx.animation.FadeTransition;
-import javafx.geometry.Pos;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
+import javafx.stage.Stage;
 
 import java.util.Random;
 
-public class FieldCreation {
-
-    public Tile[][] filedTiles;
-    public int[][] numberOfSurroundingBombs;
-    public boolean[][] tileOpenCheck;
+class FieldCreation extends ClickAction {
     private final int rectangleVertical = 50;
     private final int rectangleWidth = 50;
     private final int BOMB = 9;
 
-
-    void filedInitialization(int vertical, int width, int numberOfBombs) {
-        filedTiles = new Tile[vertical][width];
+    void fieldInitialization(Stage stage, int vertical, int width, int numberOfBombs) {
+        nowStage = stage;
+        numberOfTileOpen = vertical * width - numberOfBombs;
+        System.out.println(numberOfTileOpen);
+        fieldTiles = new Tile[vertical][width];
         numberOfSurroundingBombs = new int[vertical][width];
         SettingBombs(vertical, width, numberOfBombs);
 
@@ -31,9 +21,9 @@ public class FieldCreation {
                 int surroundBomb = numberOfSurroundingBombs[verticalCoordinate][widthCoordinate];
                 System.out.print(surroundBomb);
                 if (surroundBomb == BOMB) {
-                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile("B", verticalCoordinate, widthCoordinate);
+                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile("B", verticalCoordinate, widthCoordinate, this);
                 } else {
-                    filedTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb), verticalCoordinate, widthCoordinate);
+                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb), verticalCoordinate, widthCoordinate, this);
                 }
             }
             System.out.println();
@@ -71,45 +61,10 @@ public class FieldCreation {
         }
     }
 
-    public class Tile extends StackPane {
-        Text tileContentText = new Text();
-        private ClickAction clickAction = new ClickAction();
-        String titleInText;
-        Boolean tileOpenCHeck;
-        private int verticalCoordinate;
-        private int widthCoordinate;
-
-        Tile (String tile, int vertical, int width) {
-            Rectangle tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
-            titleInText = tile;
-            tileOpenCHeck = false;
-            verticalCoordinate = vertical;
-            widthCoordinate = width;
-            tileBorder.setFill(null);
-            tileBorder.setStroke(Color.BLACK);
-            tileContentText.setText("");
-            tileContentText.setFont(Font.font(30));
-
-            setAlignment(Pos.CENTER);
-            getChildren().addAll(tileBorder, tileContentText);
-
-            setOnMouseClicked(this::onMouseClick);
-        }
-
-        private void onMouseClick(MouseEvent event) {
-            System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
-            if (titleInText.equals("B")) {
-                clickAction.clickBomb(filedTiles);
-            } else {
-                clickAction.openTilesOfZero(filedTiles, numberOfSurroundingBombs, verticalCoordinate, widthCoordinate);
-            }
-        }
-    }
-
     void AddTileToPane(int vertical, int width, Pane pane) {
         for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < width; ++widthCoordinate) {
-                Tile tile = filedTiles[verticalCoordinate][widthCoordinate];
+                Tile tile = fieldTiles[verticalCoordinate][widthCoordinate];
                 tile.setTranslateX(rectangleWidth * widthCoordinate);
                 tile.setTranslateY(rectangleVertical * verticalCoordinate);
                 pane.getChildren().add(tile);

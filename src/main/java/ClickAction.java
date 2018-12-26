@@ -1,6 +1,16 @@
-class ClickAction extends FieldCreation {
-    public void tileOpen(Tile[][] fieldTiles, int vertical, int width) {
+import javafx.stage.Stage;
+
+class ClickAction {
+
+    Tile[][] fieldTiles;
+    int[][] numberOfSurroundingBombs;
+    Stage nowStage;
+    int numberOfTileOpen;
+
+    private void tileOpen(int vertical, int width) {
         try {
+            --numberOfTileOpen;
+            System.out.println(numberOfTileOpen);
             fieldTiles[vertical][width].tileOpenCHeck = true;
             fieldTiles[vertical][width].tileContentText.setText(fieldTiles[vertical][width].titleInText);
         } catch (IndexOutOfBoundsException e) {
@@ -8,28 +18,37 @@ class ClickAction extends FieldCreation {
         }
     }
 
-    void openTilesOfZero(Tile[][] fieldTiles, int[][] numberOfSurroundingBombs, int vertical, int width) {
+    void openTilesOfZero(int vertical, int width) {
         try {
             if (fieldTiles[vertical][width].tileOpenCHeck) return;
-            tileOpen(fieldTiles, vertical, width);
+            tileOpen(vertical, width);
+            if (numberOfTileOpen == 0) {
+                showAll(false); //  did not click on any bombs (false)
+                return;
+            }
             if (numberOfSurroundingBombs[vertical][width] != 0) { return; }
         } catch (IndexOutOfBoundsException e) {
             return; // nothing to do
         }
         for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
             for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
-                openTilesOfZero(fieldTiles, numberOfSurroundingBombs, vertical + verticalCoordinate, width + widthCoordinate);
+                openTilesOfZero(vertical + verticalCoordinate, width + widthCoordinate);
             }
         }
     }
 
-    void clickBomb(Tile[][] fieldTiles) {
+    void showAll(boolean clickBomb) {
         for (int verticalCoordinate = 0; verticalCoordinate < fieldTiles.length; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < fieldTiles[verticalCoordinate].length; ++widthCoordinate) {
-                tileOpen(fieldTiles, verticalCoordinate, widthCoordinate);
+                tileOpen(verticalCoordinate, widthCoordinate);
             }
         }
+        System.out.println("finish " + clickBomb);
+        MineSweeper newGame = new MineSweeper();
+        if (clickBomb) {
+            newGame.executionApplication(nowStage);
+        } else {
+            newGame.executionApplication(nowStage);
+        }
     }
-
-
 }
