@@ -1,7 +1,8 @@
 import javafx.scene.control.ButtonType;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-class ClickAction {
+class ClickAction extends NumberColor{
 
     Tile[][] fieldTiles;
     int[][] numberOfSurroundingBombs;
@@ -13,6 +14,12 @@ class ClickAction {
             --numberOfTileOpen;
             System.out.println(numberOfTileOpen);
             fieldTiles[vertical][width].tileOpenCHeck = true;
+            int tileNumber = numberOfSurroundingBombs[vertical][width];
+            if (tileNumber != 9) {
+                fieldTiles[vertical][width].tileContentText.setFill(numberOfBombsInColor(numberOfSurroundingBombs[vertical][width]));
+            } else {
+                fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
+            }
             fieldTiles[vertical][width].tileContentText.setText(fieldTiles[vertical][width].titleInText);
         } catch (IndexOutOfBoundsException e) {
             // nothing to do

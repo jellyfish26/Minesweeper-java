@@ -13,13 +13,14 @@ class Tile extends StackPane {
     Text tileContentText = new Text();
     String titleInText;
     Boolean tileOpenCHeck;
+    Rectangle tileBorder;
     private ClickAction clickAction;
     private int verticalCoordinate;
     private int widthCoordinate;
 
     Tile (String tile, int vertical, int width, ClickAction click) {
         clickAction = click;
-        Rectangle tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
+        tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
         titleInText = tile;
         tileOpenCHeck = false;
         verticalCoordinate = vertical;
@@ -28,6 +29,7 @@ class Tile extends StackPane {
         tileBorder.setStroke(Color.BLACK);
         tileContentText.setText("");
         tileContentText.setFont(Font.font(30));
+        tileContentText.setFill(Color.ORANGE);
 
         setAlignment(Pos.CENTER);
         getChildren().addAll(tileBorder, tileContentText);

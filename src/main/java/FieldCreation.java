@@ -46,7 +46,7 @@ class FieldCreation extends ClickAction {
 
     private void CountUpAroundBomb(int setVerticalCoordinate, int setWidthCoordinate) {
         /*  1 1 1
-         *  1 * 1
+         *  1 B 1
          *  1 1 1 */
         for (int vertical = -1; vertical <= 1; vertical++) {
             for (int width = -1; width <= 1; width++) {
