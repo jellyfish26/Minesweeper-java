@@ -1,6 +1,6 @@
 import javafx.scene.paint.Color;
 
-public class NumberColor {
+class NumberColor {
     Color numberOfBombsInColor(int bombNumber) {
         switch (bombNumber) {
             case 0:

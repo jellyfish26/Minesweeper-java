@@ -28,10 +28,14 @@ public class MineSweeper extends Application {
         System.out.println(width);
         int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください", "爆弾の設定");
         System.out.println(numberOfBombs);
-
         Pane displayLayout = new Pane();
         displayLayout.setPrefSize(1000, 1000);
         FieldCreation fieldCreation = new FieldCreation();
+
+        // 1000 x 1000 fit the fields
+        fieldCreation.rectangleLength = 1000 / (double)Math.max(vertical, width);
+        System.out.println(fieldCreation.rectangleLength);
+
         fieldCreation.fieldInitialization(nowStage, vertical, width, numberOfBombs);
         fieldCreation.AddTileToPane(vertical, width, displayLayout);
         return displayLayout;
