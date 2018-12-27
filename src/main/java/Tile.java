@@ -8,8 +8,6 @@ import javafx.scene.text.Text;
 
 class Tile extends StackPane {
 
-    private final int rectangleVertical = 50;
-    private final int rectangleWidth = 50;
     Text tileContentText = new Text();
     String titleInText;
     Boolean tileOpenCHeck;
@@ -18,9 +16,9 @@ class Tile extends StackPane {
     private int verticalCoordinate;
     private int widthCoordinate;
 
-    Tile (String tile, int vertical, int width, ClickAction click) {
+    Tile (String tile, int vertical, int width, ClickAction click, double rectangleLength) {
         clickAction = click;
-        tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
+        tileBorder = new Rectangle(rectangleLength, rectangleLength);
         titleInText = tile;
         tileOpenCHeck = false;
         verticalCoordinate = vertical;
@@ -28,7 +26,7 @@ class Tile extends StackPane {
         tileBorder.setFill(null);
         tileBorder.setStroke(Color.BLACK);
         tileContentText.setText("");
-        tileContentText.setFont(Font.font(30));
+        tileContentText.setFont(Font.font(rectangleLength * 0.9));
         tileContentText.setFill(Color.ORANGE);
 
         setAlignment(Pos.CENTER);
