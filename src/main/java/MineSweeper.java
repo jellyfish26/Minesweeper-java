@@ -30,7 +30,7 @@ public class MineSweeper extends Application {
         System.out.println(numberOfBombs);
 
         Pane displayLayout = new Pane();
-        displayLayout.setPrefSize(1500, 1500);
+        displayLayout.setPrefSize(1000, 1000);
         FieldCreation fieldCreation = new FieldCreation();
         fieldCreation.fieldInitialization(nowStage, vertical, width, numberOfBombs);
         fieldCreation.AddTileToPane(vertical, width, displayLayout);

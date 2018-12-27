@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'Minesweeper'
-version '1.0.0-develop'
+version '1.1.0'
 
 sourceCompatibility = 11
 
@@ -22,3 +22,12 @@ javafx {
     modules = [ 'javafx.controls' ]
     version = "11.0.+"
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'MineSweeper'
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
