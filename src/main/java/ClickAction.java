@@ -9,6 +9,9 @@ class ClickAction extends NumberColor{
     Stage nowStage;
     int numberOfTileOpen;
 
+    /* By using instances, we do not operate GC and operate applications with minimal memory. */
+    MineSweeper usedMineSweeper;
+
     private void tileOpen(int vertical, int width) {
         try {
             --numberOfTileOpen;
@@ -18,6 +21,7 @@ class ClickAction extends NumberColor{
             if (tileNumber != 9) {
                 fieldTiles[vertical][width].tileContentText.setFill(numberOfBombsInColor(numberOfSurroundingBombs[vertical][width]));
             } else {
+                fieldTiles[vertical][width].tileContentText.setFill(Color.ORANGE);
                 fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
             }
             fieldTiles[vertical][width].tileContentText.setText(fieldTiles[vertical][width].titleInText);
@@ -52,20 +56,22 @@ class ClickAction extends NumberColor{
             }
         }
         System.out.println("finish " + clickBomb);
-        MineSweeper newGame = new MineSweeper();
         GenerateDialog result = new GenerateDialog();
         if (clickBomb) {
-            if (result.resultDialog("あなたの負けです。", "リザルト") == ButtonType.YES) {
-                newGame.executionApplication(nowStage);
-            } else{
+            if (result.resultDialog("あなたの負けです。", "リザルト") != ButtonType.YES) {
                 System.exit(0);
             }
         } else {
-            if (result.resultDialog("あなたの勝ちです。", "リザルト") == ButtonType.YES) {
-                newGame.executionApplication(nowStage);
-            } else{
+            if (result.resultDialog("あなたの勝ちです。", "リザルト") != ButtonType.YES) {
                 System.exit(0);
             }
         }
+
+        /* For once, in order to make garbage collection work. */
+        result = null;
+        fieldTiles = null;
+        numberOfSurroundingBombs = null;
+
+        usedMineSweeper.executionApplication(nowStage);
     }
 }

@@ -36,7 +36,7 @@ public class MineSweeper extends Application {
         fieldCreation.rectangleLength = 1000 / (double)Math.max(vertical, width);
         System.out.println(fieldCreation.rectangleLength);
 
-        fieldCreation.fieldInitialization(nowStage, vertical, width, numberOfBombs);
+        fieldCreation.fieldInitialization(nowStage, this, vertical, width, numberOfBombs);
         fieldCreation.AddTileToPane(vertical, width, displayLayout);
         return displayLayout;
     }
