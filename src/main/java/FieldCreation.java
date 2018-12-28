@@ -7,7 +7,8 @@ class FieldCreation extends ClickAction {
     double rectangleLength = 50;
     private final int BOMB = 9;
 
-    void fieldInitialization(Stage stage, int vertical, int width, int numberOfBombs) {
+    void fieldInitialization(Stage stage, MineSweeper mineSweeper, int vertical, int width, int numberOfBombs) {
+        usedMineSweeper = mineSweeper;
         nowStage = stage;
         numberOfTileOpen = vertical * width - numberOfBombs;
         System.out.println(numberOfTileOpen);

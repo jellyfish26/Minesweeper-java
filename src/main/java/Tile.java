@@ -27,7 +27,6 @@ class Tile extends StackPane {
         tileBorder.setStroke(Color.BLACK);
         tileContentText.setText("");
         tileContentText.setFont(Font.font(rectangleLength * 0.9));
-        tileContentText.setFill(Color.ORANGE);
 
         setAlignment(Pos.CENTER);
         getChildren().addAll(tileBorder, tileContentText);
