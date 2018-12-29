@@ -4,16 +4,17 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 class FieldCreation extends ClickAction {
-    private final int rectangleVertical = 50;
-    private final int rectangleWidth = 50;
+    double rectangleLength = 50;
     private final int BOMB = 9;
 
-    void fieldInitialization(Stage stage, int vertical, int width, int numberOfBombs) {
+    void fieldInitialization(Stage stage, MineSweeper mineSweeper, int vertical, int width, int numberOfBombs) {
+        usedMineSweeper = mineSweeper;
         nowStage = stage;
         numberOfTileOpen = vertical * width - numberOfBombs;
         System.out.println(numberOfTileOpen);
         fieldTiles = new Tile[vertical][width];
         numberOfSurroundingBombs = new int[vertical][width];
+        flagInstall = new boolean[vertical][width];
         SettingBombs(vertical, width, numberOfBombs);
 
         for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
@@ -21,9 +22,9 @@ class FieldCreation extends ClickAction {
                 int surroundBomb = numberOfSurroundingBombs[verticalCoordinate][widthCoordinate];
                 System.out.print(surroundBomb);
                 if (surroundBomb == BOMB) {
-                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile("B", verticalCoordinate, widthCoordinate, this);
+                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile("B", verticalCoordinate, widthCoordinate, this, rectangleLength);
                 } else {
-                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb), verticalCoordinate, widthCoordinate, this);
+                    fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(String.valueOf(surroundBomb), verticalCoordinate, widthCoordinate, this, rectangleLength);
                 }
             }
             System.out.println();
@@ -46,7 +47,7 @@ class FieldCreation extends ClickAction {
 
     private void CountUpAroundBomb(int setVerticalCoordinate, int setWidthCoordinate) {
         /*  1 1 1
-         *  1 * 1
+         *  1 B 1
          *  1 1 1 */
         for (int vertical = -1; vertical <= 1; vertical++) {
             for (int width = -1; width <= 1; width++) {
@@ -65,8 +66,8 @@ class FieldCreation extends ClickAction {
         for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < width; ++widthCoordinate) {
                 Tile tile = fieldTiles[verticalCoordinate][widthCoordinate];
-                tile.setTranslateX(rectangleWidth * widthCoordinate);
-                tile.setTranslateY(rectangleVertical * verticalCoordinate);
+                tile.setTranslateX(rectangleLength * widthCoordinate);
+                tile.setTranslateY(rectangleLength * verticalCoordinate);
                 pane.getChildren().add(tile);
             }
         }
