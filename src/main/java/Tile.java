@@ -1,4 +1,5 @@
 import javafx.geometry.Pos;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -8,26 +9,25 @@ import javafx.scene.text.Text;
 
 class Tile extends StackPane {
 
-    private final int rectangleVertical = 50;
-    private final int rectangleWidth = 50;
     Text tileContentText = new Text();
     String titleInText;
-    Boolean tileOpenCHeck;
+    Boolean tileOpenCheck;
+    Rectangle tileBorder;
     private ClickAction clickAction;
     private int verticalCoordinate;
     private int widthCoordinate;
 
-    Tile (String tile, int vertical, int width, ClickAction click) {
+    Tile (String tile, int vertical, int width, ClickAction click, double rectangleLength) {
         clickAction = click;
-        Rectangle tileBorder = new Rectangle(rectangleWidth, rectangleVertical);
+        tileBorder = new Rectangle(rectangleLength, rectangleLength);
         titleInText = tile;
-        tileOpenCHeck = false;
+        tileOpenCheck = false;
         verticalCoordinate = vertical;
         widthCoordinate = width;
         tileBorder.setFill(null);
         tileBorder.setStroke(Color.BLACK);
         tileContentText.setText("");
-        tileContentText.setFont(Font.font(30));
+        tileContentText.setFont(Font.font(rectangleLength * 0.9));
 
         setAlignment(Pos.CENTER);
         getChildren().addAll(tileBorder, tileContentText);
@@ -37,10 +37,14 @@ class Tile extends StackPane {
 
     private void onMouseClick(MouseEvent event) {
         System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
-        if (titleInText.equals("B")) {
-            clickAction.showAll(true); // true is click bomb
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (titleInText.equals("B")) {
+                clickAction.showAll(true); // true is click bomb
+            } else {
+                clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+            }
         } else {
-            clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+            clickAction.rightClick(verticalCoordinate, widthCoordinate);
         }
     }
 }
