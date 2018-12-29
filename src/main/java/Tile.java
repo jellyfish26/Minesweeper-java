@@ -1,4 +1,5 @@
 import javafx.geometry.Pos;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -10,7 +11,7 @@ class Tile extends StackPane {
 
     Text tileContentText = new Text();
     String titleInText;
-    Boolean tileOpenCHeck;
+    Boolean tileOpenCheck;
     Rectangle tileBorder;
     private ClickAction clickAction;
     private int verticalCoordinate;
@@ -20,7 +21,7 @@ class Tile extends StackPane {
         clickAction = click;
         tileBorder = new Rectangle(rectangleLength, rectangleLength);
         titleInText = tile;
-        tileOpenCHeck = false;
+        tileOpenCheck = false;
         verticalCoordinate = vertical;
         widthCoordinate = width;
         tileBorder.setFill(null);
@@ -36,10 +37,14 @@ class Tile extends StackPane {
 
     private void onMouseClick(MouseEvent event) {
         System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
-        if (titleInText.equals("B")) {
-            clickAction.showAll(true); // true is click bomb
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (titleInText.equals("B")) {
+                clickAction.showAll(true); // true is click bomb
+            } else {
+                clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+            }
         } else {
-            clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+            clickAction.rightClick(verticalCoordinate, widthCoordinate);
         }
     }
 }

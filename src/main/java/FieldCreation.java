@@ -14,6 +14,7 @@ class FieldCreation extends ClickAction {
         System.out.println(numberOfTileOpen);
         fieldTiles = new Tile[vertical][width];
         numberOfSurroundingBombs = new int[vertical][width];
+        flagInstall = new boolean[vertical][width];
         SettingBombs(vertical, width, numberOfBombs);
 
         for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {

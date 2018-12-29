@@ -6,23 +6,25 @@ class ClickAction extends NumberColor{
 
     Tile[][] fieldTiles;
     int[][] numberOfSurroundingBombs;
+    boolean[][] flagInstall;
     Stage nowStage;
     int numberOfTileOpen;
 
     /* By using instances, we do not operate GC and operate applications with minimal memory. */
     MineSweeper usedMineSweeper;
 
-    private void tileOpen(int vertical, int width) {
+    private void tileOpen(int vertical, int width, boolean lose) {
         try {
             --numberOfTileOpen;
             System.out.println(numberOfTileOpen);
-            fieldTiles[vertical][width].tileOpenCHeck = true;
+            fieldTiles[vertical][width].tileOpenCheck = true;
             int tileNumber = numberOfSurroundingBombs[vertical][width];
             if (tileNumber != 9) {
                 fieldTiles[vertical][width].tileContentText.setFill(numberOfBombsInColor(numberOfSurroundingBombs[vertical][width]));
             } else {
+                if (!flagInstall[vertical][width]) fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
+                if (!lose) fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
                 fieldTiles[vertical][width].tileContentText.setFill(Color.ORANGE);
-                fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
             }
             fieldTiles[vertical][width].tileContentText.setText(fieldTiles[vertical][width].titleInText);
         } catch (IndexOutOfBoundsException e) {
@@ -32,8 +34,8 @@ class ClickAction extends NumberColor{
 
     void openTilesOfZero(int vertical, int width) {
         try {
-            if (fieldTiles[vertical][width].tileOpenCHeck) return;
-            tileOpen(vertical, width);
+            if (fieldTiles[vertical][width].tileOpenCheck) return;
+            tileOpen(vertical, width, false);
             if (numberOfTileOpen == 0) {
                 showAll(false); //  did not click on any bombs (false)
                 return;
@@ -52,7 +54,7 @@ class ClickAction extends NumberColor{
     void showAll(boolean clickBomb) {
         for (int verticalCoordinate = 0; verticalCoordinate < fieldTiles.length; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < fieldTiles[verticalCoordinate].length; ++widthCoordinate) {
-                tileOpen(verticalCoordinate, widthCoordinate);
+                tileOpen(verticalCoordinate, widthCoordinate, clickBomb);
             }
         }
         System.out.println("finish " + clickBomb);
@@ -73,5 +75,20 @@ class ClickAction extends NumberColor{
         numberOfSurroundingBombs = null;
 
         usedMineSweeper.executionApplication(nowStage);
+    }
+
+    void rightClick(int vertical, int width) {
+        if (fieldTiles[vertical][width].tileOpenCheck) return;
+        if (!flagInstall[vertical][width]) {
+            fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
+            fieldTiles[vertical][width].tileContentText.setFill(Color.BLACK);
+            fieldTiles[vertical][width].tileContentText.setText("F");
+            flagInstall[vertical][width] = true;
+        } else {
+            fieldTiles[vertical][width].tileBorder.setFill(null);
+            fieldTiles[vertical][width].tileContentText.setFill(null);
+            fieldTiles[vertical][width].tileContentText.setText("");
+            flagInstall[vertical][width] = false;
+        }
     }
 }

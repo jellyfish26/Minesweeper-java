@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 
 public class MineSweeper extends Application {
     private Stage nowStage;
+    private final int displayHeight= 1000;
+    private final int displayWidth = 1000;
 
     @Override
     public void start(Stage primaryStage) {
@@ -29,11 +31,11 @@ public class MineSweeper extends Application {
         int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください", "爆弾の設定");
         System.out.println(numberOfBombs);
         Pane displayLayout = new Pane();
-        displayLayout.setPrefSize(1000, 1000);
+        displayLayout.setPrefSize(displayWidth, displayHeight);
         FieldCreation fieldCreation = new FieldCreation();
 
         // 1000 x 1000 fit the fields
-        fieldCreation.rectangleLength = 1000 / (double)Math.max(vertical, width);
+        fieldCreation.rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
         System.out.println(fieldCreation.rectangleLength);
 
         fieldCreation.fieldInitialization(nowStage, this, vertical, width, numberOfBombs);
