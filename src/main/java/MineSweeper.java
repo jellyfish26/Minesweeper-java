@@ -34,7 +34,7 @@ public class MineSweeper extends Application {
         displayLayout.setPrefSize(displayWidth, displayHeight);
         FieldCreation fieldCreation = new FieldCreation();
 
-        // 1000 x 1000 fit the fields
+        // displayHeight x displayWidth fit the fields
         fieldCreation.rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
         System.out.println(fieldCreation.rectangleLength);
 
