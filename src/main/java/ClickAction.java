@@ -9,6 +9,7 @@ class ClickAction extends NumberColor{
     boolean[][] flagInstall;
     Stage nowStage;
     int numberOfTileOpen;
+    StopWatch stopWatch = new StopWatch();
 
     /* By using instances, we do not operate GC and operate applications with minimal memory. */
     MineSweeper usedMineSweeper;
@@ -52,6 +53,7 @@ class ClickAction extends NumberColor{
     }
 
     void showAll(boolean clickBomb) {
+        String elapsedTime = stopWatch.stop();
         for (int verticalCoordinate = 0; verticalCoordinate < fieldTiles.length; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < fieldTiles[verticalCoordinate].length; ++widthCoordinate) {
                 tileOpen(verticalCoordinate, widthCoordinate, clickBomb);
@@ -64,7 +66,7 @@ class ClickAction extends NumberColor{
                 System.exit(0);
             }
         } else {
-            if (result.resultDialog("あなたの勝ちです。", "リザルト") != ButtonType.YES) {
+            if (result.resultDialog("あなたの勝ちです。(経過時間:" + elapsedTime + ")", "リザルト") != ButtonType.YES) {
                 System.exit(0);
             }
         }
@@ -77,6 +79,7 @@ class ClickAction extends NumberColor{
         usedMineSweeper.executionApplication(nowStage);
     }
 
+    // flag install(establish)
     void rightClick(int vertical, int width) {
         if (fieldTiles[vertical][width].tileOpenCheck) return;
         if (!flagInstall[vertical][width]) {

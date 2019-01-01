@@ -16,6 +16,7 @@ class FieldCreation extends ClickAction {
         numberOfSurroundingBombs = new int[vertical][width];
         flagInstall = new boolean[vertical][width];
         SettingBombs(vertical, width, numberOfBombs);
+        stopWatch.start();
 
         for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
             for (int widthCoordinate = 0; widthCoordinate < width; ++widthCoordinate) {
