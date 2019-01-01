@@ -24,11 +24,11 @@ public class MineSweeper extends Application {
 
     private Parent generateMineSweeperField() {
         GenerateDialog initialSettingDialog = new GenerateDialog();
-        int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。", "フィールドの設定");
+        int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。(1 ~ 400)", "フィールドの設定", 1, 400);
         System.out.println(vertical); // debug
-        int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。", "フィールドの設定");
+        int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。(1 ~ 400)", "フィールドの設定", 1, 400);
         System.out.println(width);
-        int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください", "爆弾の設定");
+        int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください。(1 ~ " + vertical * width + ")", "爆弾の設定", 1, vertical * width);
         System.out.println(numberOfBombs);
         Pane displayLayout = new Pane();
         displayLayout.setPrefSize(displayWidth, displayHeight);
