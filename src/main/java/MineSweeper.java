@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+
 public class MineSweeper extends Application {
     private Stage nowStage;
     private final int displayHeight= 1000;
@@ -24,11 +25,11 @@ public class MineSweeper extends Application {
 
     private Parent generateMineSweeperField() {
         GenerateDialog initialSettingDialog = new GenerateDialog();
-        int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。(1 ~ 400)", "フィールドの設定", 1, 400);
+        int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。(4 ~ 400)", "フィールドの設定", 4, 400);
         System.out.println(vertical); // debug
-        int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。(1 ~ 400)", "フィールドの設定", 1, 400);
+        int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。(4 ~ 400)", "フィールドの設定", 4, 400);
         System.out.println(width);
-        int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください。(1 ~ " + vertical * width + ")", "爆弾の設定", 1, vertical * width);
+        int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください。(1 ~ " + (vertical * width - 10) + ")", "爆弾の設定", 1, vertical * width - 10);
         System.out.println(numberOfBombs);
         Pane displayLayout = new Pane();
         displayLayout.setPrefSize(displayWidth, displayHeight);

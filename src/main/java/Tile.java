@@ -7,17 +7,18 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+
 class Tile extends StackPane {
 
     Text tileContentText = new Text();
-    String titleInText;
+    Integer titleInText;
     Boolean tileOpenCheck;
     Rectangle tileBorder;
     private ClickAction clickAction;
     private int verticalCoordinate;
     private int widthCoordinate;
 
-    Tile (String tile, int vertical, int width, ClickAction click, double rectangleLength) {
+    Tile (Integer tile, int vertical, int width, ClickAction click, double rectangleLength) {
         clickAction = click;
         tileBorder = new Rectangle(rectangleLength, rectangleLength);
         titleInText = tile;
@@ -38,7 +39,12 @@ class Tile extends StackPane {
     private void onMouseClick(MouseEvent event) {
         System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
         if (event.getButton() == MouseButton.PRIMARY) {
-            if (titleInText.equals("B")) {
+            /* At first it does not touch the bomb */
+            if (clickAction.manipulateBombs.firstClick) {
+                clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+                return;
+            }
+            if (titleInText >= 9) {
                 clickAction.showAll(true); // true is click bomb
             } else {
                 clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
