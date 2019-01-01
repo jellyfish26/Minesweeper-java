@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class MineSweeper extends Application {
     private Stage nowStage;
     private final int displayHeight= 1000;
-    private final int displayWidth = 1000;
+    private final int displayWidth = displayHeight + 200;
 
     @Override
     public void start(Stage primaryStage) {
@@ -41,6 +41,7 @@ public class MineSweeper extends Application {
 
         fieldCreation.fieldInitialization(nowStage, this, vertical, width, numberOfBombs);
         fieldCreation.AddTileToPane(vertical, width, displayLayout);
+        fieldCreation.remainText(displayLayout);
         return displayLayout;
     }
 }

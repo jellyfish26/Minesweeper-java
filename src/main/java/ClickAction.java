@@ -1,5 +1,9 @@
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.Random;
 
@@ -14,11 +18,15 @@ class ClickAction extends NumberColor{
     StopWatch stopWatch = new StopWatch();
     final int BOMB = 9;
     ManipulateBombs manipulateBombs;
+    Text remainBombs;
+    int numberOfBombs;
+    int numberOfFlags = 0;
 
     /* By using instances, we do not operate GC and operate applications with minimal memory. */
     MineSweeper usedMineSweeper;
 
     private void tileOpen(int vertical, int width, boolean lose) {
+        if (flagInstall[vertical][width]) return;
         try {
             --numberOfTileOpen;
             System.out.println(numberOfTileOpen);
@@ -43,7 +51,7 @@ class ClickAction extends NumberColor{
         if (manipulateBombs.firstClick) setFirstClick(vertical, width);
         manipulateBombs.firstClick = false;
         try {
-            if (fieldTiles[vertical][width].tileOpenCheck) return;
+            if (fieldTiles[vertical][width].tileOpenCheck || flagInstall[vertical][width]) return;
             tileOpen(vertical, width, false);
             if (numberOfTileOpen == 0) {
                 showAll(false); //  did not click on any bombs (false)
@@ -91,16 +99,20 @@ class ClickAction extends NumberColor{
     void rightClick(int vertical, int width) {
         if (fieldTiles[vertical][width].tileOpenCheck) return;
         if (!flagInstall[vertical][width]) {
+            ++numberOfFlags;
             fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
             fieldTiles[vertical][width].tileContentText.setFill(Color.BLACK);
             fieldTiles[vertical][width].tileContentText.setText("F");
             flagInstall[vertical][width] = true;
         } else {
+            --numberOfFlags;
             fieldTiles[vertical][width].tileBorder.setFill(null);
             fieldTiles[vertical][width].tileContentText.setFill(null);
             fieldTiles[vertical][width].tileContentText.setText("");
             flagInstall[vertical][width] = false;
         }
+        if (numberOfFlags < 0) numberOfFlags = 0;
+        remainBombs.setText(Integer.toString(numberOfBombs - numberOfFlags));
     }
 
     private void setFirstClick(int vertical, int width) {
