@@ -23,7 +23,7 @@ class ClickAction extends NumberColor{
     MineSweeper usedMineSweeper;
 
     private void tileOpen(int vertical, int width, boolean lose) {
-        if (flagInstall[vertical][width]) return;
+        if (flagInstall[vertical][width] && !lose) return;
         try {
             --numberOfTileOpen;
             System.out.println(numberOfTileOpen);
