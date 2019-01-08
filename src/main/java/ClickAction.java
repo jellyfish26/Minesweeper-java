@@ -26,7 +26,7 @@ class ClickAction extends NumberColor{
         if (flagInstall[vertical][width] && !lose) return;
         try {
             --numberOfTileOpen;
-            System.out.println(numberOfTileOpen);
+            // System.out.println(numberOfTileOpen);
             fieldTiles[vertical][width].tileOpenCheck = true;
             int tileNumber = numberOfSurroundingBombs[vertical][width];
             if (tileNumber < 9) {
@@ -39,7 +39,7 @@ class ClickAction extends NumberColor{
                 fieldTiles[vertical][width].tileContentText.setText("B");
             }
         } catch (IndexOutOfBoundsException e) {
-            // nothing to do
+            /* nothing to do */
         }
     }
 
@@ -51,12 +51,12 @@ class ClickAction extends NumberColor{
             if (fieldTiles[vertical][width].tileOpenCheck || flagInstall[vertical][width]) return;
             tileOpen(vertical, width, false);
             if (numberOfTileOpen == 0) {
-                showAll(false); //  did not click on any bombs (false)
+                showAll(false); /* did not click on any bombs (false) */
                 return;
             }
             if (numberOfSurroundingBombs[vertical][width] != 0) { return; }
         } catch (IndexOutOfBoundsException e) {
-            return; // nothing to do
+            return; /* nothing to do */
         }
         for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
             for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
@@ -72,7 +72,7 @@ class ClickAction extends NumberColor{
                 tileOpen(verticalCoordinate, widthCoordinate, clickBomb);
             }
         }
-        System.out.println("finish " + clickBomb);
+        // System.out.println("finish " + clickBomb);
         GenerateDialog result = new GenerateDialog();
         if (clickBomb) {
             if (result.resultDialog("あなたの負けです。", "リザルト") != ButtonType.YES) {
@@ -125,7 +125,7 @@ class ClickAction extends NumberColor{
                         ++bombCount;
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    // nothing to do
+                    /* nothing to do */
                 }
             }
         }
@@ -148,10 +148,10 @@ class ClickAction extends NumberColor{
                             ++bombCount;
                         } else {
                             --numberOfSurroundingBombs[vertical + verticalCoordinate][width + widthCoordinate];
-                            fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].titleInText = aroundBomb - 1; // A tile instance has already been created.
+                            fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].titleInText = aroundBomb - 1; /* A tile instance has already been created. */
                         }
                     } catch (IndexOutOfBoundsException e) {
-                        // nothing to do
+                        /* nothing to do */
                     }
                 }
             }
@@ -159,20 +159,20 @@ class ClickAction extends NumberColor{
             fieldTiles[vertical][width].titleInText = bombCount;
         }
 
-        // not prohibited input is -2
+        /* not prohibited input is -2 */
         void SettingBombs(int numberOfBombs, int prohibitedVerticalCoordinate, int prohibitedWidthCoordinate) {
             Random randomCoordinate = new Random();
             for (int setting = 0; setting < numberOfBombs; ++setting) {
-                System.out.println(fieldVertical);
+                // System.out.println(fieldVertical);
                 int bombVerticalCoordinate = randomCoordinate.nextInt(fieldVertical);
                 int bombWidthCoordinate = randomCoordinate.nextInt(fieldWidth);
                 boolean prohibitedVerticalCheck = prohibitedVerticalCoordinate -1 <= bombVerticalCoordinate && bombVerticalCoordinate <= prohibitedVerticalCoordinate + 1;
-                boolean prohobitedWidthCheck = prohibitedWidthCoordinate -1 <= bombWidthCoordinate && bombWidthCoordinate <= prohibitedWidthCoordinate + 1;
-                if (numberOfSurroundingBombs[bombVerticalCoordinate][bombWidthCoordinate] == BOMB || (prohibitedVerticalCheck & prohobitedWidthCheck)) {
-                    --setting; // A bomb has already been installed.
+                boolean prohibitedWidthCheck = prohibitedWidthCoordinate -1 <= bombWidthCoordinate && bombWidthCoordinate <= prohibitedWidthCoordinate + 1;
+                if (numberOfSurroundingBombs[bombVerticalCoordinate][bombWidthCoordinate] == BOMB || (prohibitedVerticalCheck & prohibitedWidthCheck)) {
+                    --setting; /* A bomb has already been installed. */
                 } else {
                     numberOfSurroundingBombs[bombVerticalCoordinate][bombWidthCoordinate] = BOMB;
-                    if (firstClick) fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].titleInText = 9; // It is checking whether a tile instance has been created.
+                    if (firstClick) fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].titleInText = 9; /* It is checking whether a tile instance has been created. */
                     CountUpAroundBomb(bombVerticalCoordinate, bombWidthCoordinate);
                 }
             }
@@ -191,7 +191,7 @@ class ClickAction extends NumberColor{
                             if (firstClick) fieldTiles[setVerticalCoordinate + vertical][setWidthCoordinate + width].titleInText = aroundBomb;
                         }
                     } catch (IndexOutOfBoundsException e) {
-                        // nothing to do
+                        /* nothing to do */
                     }
                 }
             }
