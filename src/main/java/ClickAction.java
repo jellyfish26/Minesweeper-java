@@ -19,7 +19,7 @@ class ClickAction extends NumberColor{
   int numberOfBombs;
   int numberOfFlags = 0;
 
-  /* By using instances, we do not operate GC and operate applications with minimal memory. */
+  // By using instances, we do not operate GC and operate applications with minimal memory.
   MineSweeper usedMineSweeper;
 
   private void tileOpen(int vertical, int width, boolean lose) {
@@ -43,7 +43,7 @@ class ClickAction extends NumberColor{
     }
   }
 
-  /*  Zero tiles open around. and non-zero tiles open */
+  //  Zero tiles open around. and non-zero tiles open
   void openTilesOfZero(int vertical, int width) {
     if (manipulateBombs.firstClick) setFirstClick(vertical, width);
     manipulateBombs.firstClick = false;
@@ -51,12 +51,12 @@ class ClickAction extends NumberColor{
       if (fieldTiles[vertical][width].tileOpenCheck || flagInstall[vertical][width]) return;
       tileOpen(vertical, width, false);
       if (numberOfTileOpen == 0) {
-        showAll(false); /* did not click on any bombs (false) */
+        showAll(false); // did not click on any bombs (false)
         return;
       }
       if (numberOfSurroundingBombs[vertical][width] != 0) { return; }
     } catch (IndexOutOfBoundsException e) {
-      return; /* nothing to do */
+      return;
     }
     for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
       for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
@@ -84,7 +84,7 @@ class ClickAction extends NumberColor{
       }
     }
 
-    /* For once, in order to make garbage collection work. */
+    // For once, in order to make garbage collection work.
     result = null;
     fieldTiles = null;
     numberOfSurroundingBombs = null;
@@ -125,7 +125,7 @@ class ClickAction extends NumberColor{
             ++bombCount;
           }
         } catch (IndexOutOfBoundsException e) {
-          /* nothing to do */
+          // nothing to do
         }
       }
     }
@@ -148,10 +148,10 @@ class ClickAction extends NumberColor{
               ++bombCount;
             } else {
               --numberOfSurroundingBombs[vertical + verticalCoordinate][width + widthCoordinate];
-              fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].titleInText = aroundBomb - 1; /* A tile instance has already been created. */
+              fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].titleInText = aroundBomb - 1; // A tile instance has already been created.
             }
           } catch (IndexOutOfBoundsException e) {
-            /* nothing to do */
+            // nothing to do
           }
         }
       }
@@ -159,7 +159,7 @@ class ClickAction extends NumberColor{
       fieldTiles[vertical][width].titleInText = bombCount;
     }
 
-    /* not prohibited input is -2 */
+    // not prohibited input is -2
     void SettingBombs(int numberOfBombs, int prohibitedVerticalCoordinate, int prohibitedWidthCoordinate) {
       Random randomCoordinate = new Random();
       for (int setting = 0; setting < numberOfBombs; ++setting) {
@@ -169,19 +169,19 @@ class ClickAction extends NumberColor{
         boolean prohibitedVerticalCheck = prohibitedVerticalCoordinate -1 <= bombVerticalCoordinate && bombVerticalCoordinate <= prohibitedVerticalCoordinate + 1;
         boolean prohibitedWidthCheck = prohibitedWidthCoordinate -1 <= bombWidthCoordinate && bombWidthCoordinate <= prohibitedWidthCoordinate + 1;
         if (numberOfSurroundingBombs[bombVerticalCoordinate][bombWidthCoordinate] == BOMB || (prohibitedVerticalCheck & prohibitedWidthCheck)) {
-          --setting; /* A bomb has already been installed. */
+          --setting; // A bomb has alread been installed
         } else {
           numberOfSurroundingBombs[bombVerticalCoordinate][bombWidthCoordinate] = BOMB;
-          if (firstClick) fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].titleInText = 9; /* It is checking whether a tile instance has been created. */
+          if (firstClick) fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].titleInText = 9; // It is checking whether a tile instance has been created.
           CountUpAroundBomb(bombVerticalCoordinate, bombWidthCoordinate);
         }
       }
     }
 
     private void CountUpAroundBomb(int setVerticalCoordinate, int setWidthCoordinate) {
-      /*  1 1 1
-       *  1 B 1
-       *  1 1 1 */
+      //  1 1 1
+      //  1 B 1
+      //  1 1 1
       for (int vertical = -1; vertical <= 1; vertical++) {
         for (int width = -1; width <= 1; width++) {
           try {
@@ -191,7 +191,7 @@ class ClickAction extends NumberColor{
               if (firstClick) fieldTiles[setVerticalCoordinate + vertical][setWidthCoordinate + width].titleInText = aroundBomb;
             }
           } catch (IndexOutOfBoundsException e) {
-            /* nothing to do */
+            // nothing to do
           }
         }
       }

@@ -39,7 +39,7 @@ class Tile extends StackPane {
   private void onMouseClick(MouseEvent event) {
     // System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
     if (event.getButton() == MouseButton.PRIMARY) {
-      /* At first it does not touch the bomb */
+      // At first it does not touch the bomb
       if (clickAction.manipulateBombs.firstClick) {
         clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
         return;
