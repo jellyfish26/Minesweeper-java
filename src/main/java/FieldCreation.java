@@ -15,27 +15,20 @@ class FieldCreation extends ClickAction {
     numberOfTileOpen = vertical * width - numberOfBombs;
     // System.out.println(numberOfTileOpen);
     fieldTiles = new Tile[vertical][width];
-    numberOfSurroundingBombs = new int[vertical][width];
     flagInstall = new boolean[vertical][width];
-    manipulateBombs = new ManipulateBombs();
-    manipulateBombs.fieldVertical = vertical;
-    manipulateBombs.fieldWidth = width;
-    manipulateBombs.SettingBombs(numberOfBombs, -2, -2);
     stopWatch.start();
     remainBombs = new Text(Integer.toString(numberOfBombs));
 
     for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
       for (int widthCoordinate = 0; widthCoordinate < width; ++widthCoordinate) {
-        int surroundBomb = numberOfSurroundingBombs[verticalCoordinate][widthCoordinate];
-        // System.out.print(surroundBomb);
-        if (surroundBomb == BOMB) {
-          fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(9, verticalCoordinate, widthCoordinate, this, rectangleLength);
-        } else {
-          fieldTiles[verticalCoordinate][widthCoordinate] = new Tile( surroundBomb, verticalCoordinate, widthCoordinate, this, rectangleLength);
-        }
+        fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(0, verticalCoordinate, widthCoordinate, this, rectangleLength);
       }
       // System.out.println();
     }
+    manipulateBombs = new ManipulateBombs();
+    manipulateBombs.fieldVertical = vertical;
+    manipulateBombs.fieldWidth = width;
+    manipulateBombs.SettingBombs(numberOfBombs, -2, -2);
     manipulateBombs.firstClick = true;
   }
 

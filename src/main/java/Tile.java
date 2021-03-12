@@ -10,6 +10,8 @@ import javafx.scene.text.Text;
 
 class Tile extends StackPane {
 
+  private int surroundBombs;
+
   Text tileContentText = new Text();
   Integer titleInText;
   Boolean tileOpenCheck;
@@ -34,6 +36,14 @@ class Tile extends StackPane {
     getChildren().addAll(tileBorder, tileContentText);
 
     setOnMouseClicked(this::onMouseClick);
+  }
+
+  public void setSurroundBombs(int surroundBombs) {
+    this.surroundBombs = surroundBombs;
+  }
+
+  public int getSurroundBombs() {
+    return surroundBombs;
   }
 
   private void onMouseClick(MouseEvent event) {
