@@ -8,7 +8,6 @@ import java.util.Random;
 class ClickAction extends NumberColor{
 
   Tile[][] fieldTiles;
-  boolean[][] flagInstall;
   Stage nowStage;
   int numberOfTileOpen;
   StopWatch stopWatch = new StopWatch();
@@ -22,7 +21,7 @@ class ClickAction extends NumberColor{
   MineSweeper usedMineSweeper;
 
   private void tileOpen(int vertical, int width, boolean lose) {
-    if (flagInstall[vertical][width] && !lose) return;
+    if (fieldTiles[vertical][width].getFlagState() && !lose) return;
     try {
       --numberOfTileOpen;
       // System.out.println(numberOfTileOpen);
@@ -32,7 +31,9 @@ class ClickAction extends NumberColor{
         fieldTiles[vertical][width].tileContentText.setFill(numberOfBombsInColor(tileNumber));
         fieldTiles[vertical][width].tileContentText.setText(String.valueOf(tileNumber));
       } else {
-        if (!flagInstall[vertical][width]) fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
+        if (!fieldTiles[vertical][width].getFlagState()) {
+          fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
+        }
         if (!lose) fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
         fieldTiles[vertical][width].tileContentText.setFill(Color.ORANGE);
         fieldTiles[vertical][width].tileContentText.setText("B");
@@ -47,7 +48,7 @@ class ClickAction extends NumberColor{
     if (manipulateBombs.firstClick) setFirstClick(vertical, width);
     manipulateBombs.firstClick = false;
     try {
-      if (fieldTiles[vertical][width].tileOpenCheck || flagInstall[vertical][width]) return;
+      if (fieldTiles[vertical][width].tileOpenCheck || fieldTiles[vertical][width].getFlagState()) return;
       tileOpen(vertical, width, false);
       if (numberOfTileOpen == 0) {
         showAll(false); // did not click on any bombs (false)
@@ -96,18 +97,12 @@ class ClickAction extends NumberColor{
   // flag install(establish)
   void rightClick(int vertical, int width) {
     if (fieldTiles[vertical][width].tileOpenCheck) return;
-    if (!flagInstall[vertical][width]) {
+    if (!fieldTiles[vertical][width].getFlagState()) {
       ++numberOfFlags;
-      fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
-      fieldTiles[vertical][width].tileContentText.setFill(Color.BLACK);
-      fieldTiles[vertical][width].tileContentText.setText("F");
-      flagInstall[vertical][width] = true;
+      fieldTiles[vertical][width].setFlag();
     } else {
       --numberOfFlags;
-      fieldTiles[vertical][width].tileBorder.setFill(null);
-      fieldTiles[vertical][width].tileContentText.setFill(null);
-      fieldTiles[vertical][width].tileContentText.setText("");
-      flagInstall[vertical][width] = false;
+      fieldTiles[vertical][width].removeFlag();
     }
     if (numberOfFlags < 0) numberOfFlags = 0;
     remainBombs.setText(Integer.toString(numberOfBombs - numberOfFlags));

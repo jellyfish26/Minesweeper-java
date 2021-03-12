@@ -15,7 +15,6 @@ class FieldCreation extends ClickAction {
     numberOfTileOpen = vertical * width - numberOfBombs;
     // System.out.println(numberOfTileOpen);
     fieldTiles = new Tile[vertical][width];
-    flagInstall = new boolean[vertical][width];
     stopWatch.start();
     remainBombs = new Text(Integer.toString(numberOfBombs));
 

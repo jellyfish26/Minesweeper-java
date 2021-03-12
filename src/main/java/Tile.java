@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 class Tile extends StackPane {
 
   private int surroundBombs;
+  private boolean isFlagEnabled;
 
   Text tileContentText = new Text();
   Integer titleInText;
@@ -44,6 +45,24 @@ class Tile extends StackPane {
 
   public int getSurroundBombs() {
     return surroundBombs;
+  }
+
+  public void setFlag() {
+    tileBorder.setFill(Color.GREENYELLOW);
+    tileContentText.setFill(Color.BLACK);
+    tileContentText.setText("F");
+    isFlagEnabled = true;
+  }
+
+  public void removeFlag() {
+    tileBorder.setFill(Color.WHITE);
+    tileContentText.setFill(Color.WHITE);
+    tileContentText.setText("");
+    isFlagEnabled = false;
+  }
+
+  public boolean getFlagState() {
+    return isFlagEnabled;
   }
 
   private void onMouseClick(MouseEvent event) {
