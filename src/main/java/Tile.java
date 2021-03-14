@@ -65,6 +65,47 @@ class Tile extends StackPane {
     return isFlagEnabled;
   }
 
+  private Color numberOfBombsInColor(int bombNumber) {
+    switch (bombNumber) {
+      case 0:
+        return Color.DEEPSKYBLUE;
+      case 1:
+        return Color.BLUE;
+      case 2:
+        return Color.GREEN;
+      case 3:
+        return Color.ORANGE;
+      case 4:
+        return Color.ORANGERED;
+      case 5:
+        return Color.RED;
+      case 6:
+        return Color.MEDIUMVIOLETRED;
+      case 7:
+        return Color.PURPLE;
+      case 8:
+        return Color.INDIGO;
+    }
+    return Color.BLACK;
+  }
+
+  public void open() {
+    tileOpenCheck = true;
+    if (surroundBombs == 9) {
+      if (isFlagEnabled) {
+        tileBorder.setFill(Color.GREENYELLOW);
+      } else {
+        tileBorder.setFill(Color.DARKORCHID);
+      }
+      tileContentText.setFill(Color.ORANGE);
+      tileContentText.setText("B");
+      return;
+    }
+    tileContentText.setFill(numberOfBombsInColor(surroundBombs));
+    tileContentText.setText(String.valueOf(surroundBombs));
+  }
+
+
   private void onMouseClick(MouseEvent event) {
     // System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
     if (event.getButton() == MouseButton.PRIMARY) {

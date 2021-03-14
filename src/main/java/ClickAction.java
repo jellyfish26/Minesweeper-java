@@ -19,50 +19,13 @@ class ClickAction {
 
   // By using instances, we do not operate GC and operate applications with minimal memory.
   MineSweeper usedMineSweeper;
-  private Color numberOfBombsInColor(int bombNumber) {
-    switch (bombNumber) {
-      case 0:
-        return Color.DEEPSKYBLUE;
-      case 1:
-        return Color.BLUE;
-      case 2:
-        return Color.GREEN;
-      case 3:
-        return Color.ORANGE;
-      case 4:
-        return Color.ORANGERED;
-      case 5:
-        return Color.RED;
-      case 6:
-        return Color.MEDIUMVIOLETRED;
-      case 7:
-        return Color.PURPLE;
-      case 8:
-        return Color.INDIGO;
-    }
-    return Color.BLACK;
-  }
 
   private void tileOpen(int vertical, int width, boolean lose) {
     if (fieldTiles[vertical][width].getFlagState() && !lose) return;
     try {
-      --numberOfTileOpen;
-      // System.out.println(numberOfTileOpen);
-      fieldTiles[vertical][width].tileOpenCheck = true;
-      int tileNumber = fieldTiles[vertical][width].getSurroundBombs();
-      if (tileNumber < 9) {
-        fieldTiles[vertical][width].tileContentText.setFill(numberOfBombsInColor(tileNumber));
-        fieldTiles[vertical][width].tileContentText.setText(String.valueOf(tileNumber));
-      } else {
-        if (!fieldTiles[vertical][width].getFlagState()) {
-          fieldTiles[vertical][width].tileBorder.setFill(Color.DARKORCHID);
-        }
-        if (!lose) fieldTiles[vertical][width].tileBorder.setFill(Color.GREENYELLOW);
-        fieldTiles[vertical][width].tileContentText.setFill(Color.ORANGE);
-        fieldTiles[vertical][width].tileContentText.setText("B");
-      }
+      fieldTiles[vertical][width].open();
     } catch (IndexOutOfBoundsException e) {
-      /* nothing to do */
+      // nothing to do
     }
   }
 
