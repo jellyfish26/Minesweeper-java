@@ -73,7 +73,7 @@ class Tile extends StackPane {
         clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
         return;
       }
-      if (titleInText >= 9) {
+      if (surroundBombs == 9) {
         clickAction.showAll(true); // true is click bomb
       } else {
         clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
