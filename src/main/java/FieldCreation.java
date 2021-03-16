@@ -7,7 +7,14 @@ import javafx.stage.Stage;
 class FieldCreation extends ClickAction {
   double rectangleLength = 50;
 
-  void fieldInitialization(Stage stage, MineSweeper mineSweeper, int vertical, int width, int Bombs) {
+  FieldCreation(Stage stage,
+                MineSweeper mineSweeper,
+                int vertical,
+                int width,
+                int Bombs,
+                double rectangleLength) {
+    super(vertical, width);
+    this.rectangleLength = rectangleLength;
     usedMineSweeper = mineSweeper;
     nowStage = stage;
     numberOfBombs = Bombs;

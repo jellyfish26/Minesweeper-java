@@ -1,11 +1,12 @@
 import javafx.scene.control.ButtonType;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.Random;
 
 
 class ClickAction {
+
+  final private int verticalSize, widthSize;
 
   Tile[][] fieldTiles;
   Stage nowStage;
@@ -20,33 +21,41 @@ class ClickAction {
   // By using instances, we do not operate GC and operate applications with minimal memory.
   MineSweeper usedMineSweeper;
 
+  ClickAction(int verticalSize, int widthSize) {
+    this.verticalSize = verticalSize;
+    this.widthSize = widthSize;
+  }
+
+  // return true  : this index is verify
+  // return false : this index is illegal
+  private boolean checkIdx(int verticalIdx, int widthIdx) {
+    if (verticalIdx < 0 || verticalIdx >= verticalSize) return false;
+    if (widthIdx < 0 || widthIdx >= widthSize) return false;
+    return true;
+  }
+
   private void tileOpen(int vertical, int width, boolean lose) {
+    if (!checkIdx(vertical, width)) return;
     if (fieldTiles[vertical][width].getFlagState() && !lose) return;
-    try {
-      fieldTiles[vertical][width].open();
-    } catch (IndexOutOfBoundsException e) {
-      // nothing to do
-    }
+    fieldTiles[vertical][width].open();
   }
 
   //  Zero tiles open around. and non-zero tiles open
   void openTilesOfZero(int vertical, int width) {
+    if (!checkIdx(vertical, width)) return;
     if (manipulateBombs.firstClick) setFirstClick(vertical, width);
     manipulateBombs.firstClick = false;
-    try {
-      if (fieldTiles[vertical][width].tileOpenCheck || fieldTiles[vertical][width].getFlagState()) return;
-      tileOpen(vertical, width, false);
-      if (numberOfTileOpen == 0) {
-        showAll(false); // did not click on any bombs (false)
-        return;
-      }
-
-      if (fieldTiles[vertical][width].getSurroundBombs() != 0) {
-        return;
-      }
-    } catch (IndexOutOfBoundsException e) {
+    if (fieldTiles[vertical][width].tileOpenCheck || fieldTiles[vertical][width].getFlagState()) return;
+    tileOpen(vertical, width, false);
+    if (numberOfTileOpen == 0) {
+      showAll(false); // did not click on any bombs (false)
       return;
     }
+
+    if (fieldTiles[vertical][width].getSurroundBombs() != 0) {
+      return;
+    }
+      
     for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
       for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
         openTilesOfZero(vertical + verticalCoordinate, width + widthCoordinate);

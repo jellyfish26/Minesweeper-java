@@ -32,13 +32,12 @@ public class MineSweeper extends Application {
     // System.out.println(numberOfBombs);
     Pane displayLayout = new Pane();
     displayLayout.setPrefSize(displayWidth, displayHeight);
-    FieldCreation fieldCreation = new FieldCreation();
+    double rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
+    FieldCreation fieldCreation = new FieldCreation(nowStage, this, vertical, width, numberOfBombs, rectangleLength);
 
     // displayHeight x displayWidth fit the fields
-    fieldCreation.rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
     // System.out.println(fieldCreation.rectangleLength);
 
-    fieldCreation.fieldInitialization(nowStage, this, vertical, width, numberOfBombs);
     fieldCreation.AddTileToPane(vertical, width, displayLayout);
     fieldCreation.remainText(displayLayout);
     return displayLayout;
