@@ -13,12 +13,8 @@ class FieldCreation extends ClickAction {
                 int width,
                 int Bombs,
                 double rectangleLength) {
-    super(vertical, width);
+    super(stage, mineSweeper, vertical, width, Bombs);
     this.rectangleLength = rectangleLength;
-    usedMineSweeper = mineSweeper;
-    nowStage = stage;
-    numberOfBombs = Bombs;
-    numberOfFlags = 0;
     numberOfTileOpen = vertical * width - numberOfBombs;
     // System.out.println(numberOfTileOpen);
     fieldTiles = new Tile[vertical][width];

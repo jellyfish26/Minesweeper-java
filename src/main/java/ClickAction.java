@@ -21,9 +21,17 @@ class ClickAction {
   // By using instances, we do not operate GC and operate applications with minimal memory.
   MineSweeper usedMineSweeper;
 
-  ClickAction(int verticalSize, int widthSize) {
+  ClickAction(Stage nowStage,
+              MineSweeper usedMineSweeper,
+              int verticalSize,
+              int widthSize,
+              int numberOfBombs) {
+    this.nowStage = nowStage;
+    this.usedMineSweeper = usedMineSweeper;
     this.verticalSize = verticalSize;
     this.widthSize = widthSize;
+    this.numberOfBombs = numberOfBombs;
+    numberOfTileOpen = verticalSize * widthSize - numberOfBombs;
   }
 
   // return true  : this index is verify
