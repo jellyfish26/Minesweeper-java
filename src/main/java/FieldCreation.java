@@ -5,7 +5,6 @@ import javafx.stage.Stage;
 
 
 class FieldCreation extends ClickAction {
-  double rectangleLength = 50;
 
   FieldCreation(Stage stage,
                 MineSweeper mineSweeper,
@@ -13,25 +12,7 @@ class FieldCreation extends ClickAction {
                 int width,
                 int Bombs,
                 double rectangleLength) {
-    super(stage, mineSweeper, vertical, width, Bombs);
-    this.rectangleLength = rectangleLength;
-    numberOfTileOpen = vertical * width - numberOfBombs;
-    // System.out.println(numberOfTileOpen);
-    fieldTiles = new Tile[vertical][width];
-    stopWatch.start();
-    remainBombs = new Text(Integer.toString(numberOfBombs));
-
-    for (int verticalCoordinate = 0; verticalCoordinate < vertical; ++verticalCoordinate) {
-      for (int widthCoordinate = 0; widthCoordinate < width; ++widthCoordinate) {
-        fieldTiles[verticalCoordinate][widthCoordinate] = new Tile(0, verticalCoordinate, widthCoordinate, this, rectangleLength);
-      }
-      // System.out.println();
-    }
-    manipulateBombs = new ManipulateBombs();
-    manipulateBombs.fieldVertical = vertical;
-    manipulateBombs.fieldWidth = width;
-    manipulateBombs.SettingBombs(numberOfBombs, -2, -2);
-    manipulateBombs.firstClick = true;
+    super(stage, mineSweeper, vertical, width, Bombs, rectangleLength);
   }
 
   void AddTileToPane(int vertical, int width, Pane pane) {

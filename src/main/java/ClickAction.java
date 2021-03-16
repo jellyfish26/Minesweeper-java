@@ -7,6 +7,7 @@ import java.util.Random;
 class ClickAction {
 
   final private int verticalSize, widthSize;
+  final double rectangleLength;
 
   Tile[][] fieldTiles;
   Stage nowStage;
@@ -25,13 +26,32 @@ class ClickAction {
               MineSweeper usedMineSweeper,
               int verticalSize,
               int widthSize,
-              int numberOfBombs) {
+              int numberOfBombs,
+              double rectangleLength) {
     this.nowStage = nowStage;
     this.usedMineSweeper = usedMineSweeper;
     this.verticalSize = verticalSize;
     this.widthSize = widthSize;
     this.numberOfBombs = numberOfBombs;
+    this.rectangleLength = rectangleLength;
+
     numberOfTileOpen = verticalSize * widthSize - numberOfBombs;
+    fieldTiles = new Tile[verticalSize][widthSize];
+    stopWatch.start();
+    remainBombs = new Text(Integer.toString(numberOfBombs));
+
+    for (int verticalIdx = 0; verticalIdx < verticalSize; ++verticalIdx) {
+      for (int widthIdx = 0; widthIdx < widthSize; ++widthIdx) {
+        fieldTiles[verticalIdx][widthIdx] = new Tile(0, verticalIdx, widthIdx, this, rectangleLength);
+      }
+    }
+
+    manipulateBombs = new ManipulateBombs();
+    manipulateBombs.fieldVertical = verticalSize;
+    manipulateBombs.fieldWidth = widthSize;
+    manipulateBombs.SettingBombs(numberOfBombs, -2, -2);
+    manipulateBombs.firstClick = true;
+  
   }
 
   // return true  : this index is verify
