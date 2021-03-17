@@ -17,12 +17,12 @@ class Tile extends StackPane {
   Integer titleInText;
   Boolean tileOpenCheck;
   Rectangle tileBorder;
-  private ClickAction clickAction;
+  private FieldCreation field;
   private int verticalCoordinate;
   private int widthCoordinate;
 
-  Tile (Integer tile, int vertical, int width, ClickAction click, double rectangleLength) {
-    clickAction = click;
+  Tile (Integer tile, int vertical, int width, FieldCreation field, double rectangleLength) {
+    this.field = field;
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
     titleInText = tile;
     tileOpenCheck = false;
@@ -110,17 +110,17 @@ class Tile extends StackPane {
     // System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
     if (event.getButton() == MouseButton.PRIMARY) {
       // At first it does not touch the bomb
-      if (clickAction.manipulateBombs.firstClick) {
-        clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+      if (field.manipulateBombs.firstClick) {
+        field.openTilesOfZero(verticalCoordinate, widthCoordinate);
         return;
       }
       if (surroundBombs == 9) {
-        clickAction.showAll(true); // true is click bomb
+        field.showAll(true); // true is click bomb
       } else {
-        clickAction.openTilesOfZero(verticalCoordinate, widthCoordinate);
+        field.openTilesOfZero(verticalCoordinate, widthCoordinate);
       }
     } else {
-      clickAction.rightClick(verticalCoordinate, widthCoordinate);
+      field.rightClick(verticalCoordinate, widthCoordinate);
     }
   }
 }

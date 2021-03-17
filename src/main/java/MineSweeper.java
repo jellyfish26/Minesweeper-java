@@ -30,16 +30,11 @@ public class MineSweeper extends Application {
     // System.out.println(width);
     int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください。(1 ~ " + (vertical * width - 10) + ")", "爆弾の設定", 1, vertical * width - 10);
     // System.out.println(numberOfBombs);
-    Pane displayLayout = new Pane();
-    displayLayout.setPrefSize(displayWidth, displayHeight);
     double rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
-    FieldCreation fieldCreation = new FieldCreation(nowStage, this, vertical, width, numberOfBombs, rectangleLength);
+    FieldCreation fieldCreation = new FieldCreation(nowStage, this, vertical, width, numberOfBombs, displayHeight, displayWidth, rectangleLength);
 
-    // displayHeight x displayWidth fit the fields
-    // System.out.println(fieldCreation.rectangleLength);
-
-    fieldCreation.AddTileToPane(vertical, width, displayLayout);
-    fieldCreation.remainText(displayLayout);
-    return displayLayout;
+    fieldCreation.AddTileToPane();
+    fieldCreation.remainText();
+    return fieldCreation.getDisplayBase();
   }
 }
