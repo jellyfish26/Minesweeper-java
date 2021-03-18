@@ -1,6 +1,4 @@
 import javafx.geometry.Pos;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -12,22 +10,21 @@ class Tile extends StackPane {
 
   private int surroundBombs;
   private boolean isFlagEnabled;
+  final private int verticalIdx, widthIdx;
 
   Text tileContentText = new Text();
   Integer titleInText;
   Boolean tileOpenCheck;
   Rectangle tileBorder;
   private FieldCreation field;
-  private int verticalCoordinate;
-  private int widthCoordinate;
 
-  Tile (Integer tile, int vertical, int width, FieldCreation field, double rectangleLength) {
+  Tile (Integer tile, int verticalIdx, int widthIdx, FieldCreation field, double rectangleLength) {
     this.field = field;
+    this.verticalIdx = verticalIdx;
+    this.widthIdx = widthIdx;
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
     titleInText = tile;
     tileOpenCheck = false;
-    verticalCoordinate = vertical;
-    widthCoordinate = width;
     tileBorder.setFill(null);
     tileBorder.setStroke(Color.BLACK);
     tileContentText.setText("");
@@ -35,8 +32,6 @@ class Tile extends StackPane {
 
     setAlignment(Pos.CENTER);
     getChildren().addAll(tileBorder, tileContentText);
-
-    setOnMouseClicked(this::onMouseClick);
   }
 
   public void setSurroundBombs(int surroundBombs) {
@@ -63,6 +58,14 @@ class Tile extends StackPane {
 
   public boolean getFlagState() {
     return isFlagEnabled;
+  }
+
+  public int getVerticalIdx() {
+    return verticalIdx;
+  }
+
+  public int getWidthIdx() {
+    return widthIdx;
   }
 
   private Color numberOfBombsInColor(int bombNumber) {
@@ -106,21 +109,4 @@ class Tile extends StackPane {
   }
 
 
-  private void onMouseClick(MouseEvent event) {
-    // System.out.printf("%s, %s, %s\n", event, verticalCoordinate, widthCoordinate);
-    if (event.getButton() == MouseButton.PRIMARY) {
-      // At first it does not touch the bomb
-      if (field.manipulateBombs.firstClick) {
-        field.openTilesOfZero(verticalCoordinate, widthCoordinate);
-        return;
-      }
-      if (surroundBombs == 9) {
-        field.showAll(true); // true is click bomb
-      } else {
-        field.openTilesOfZero(verticalCoordinate, widthCoordinate);
-      }
-    } else {
-      field.rightClick(verticalCoordinate, widthCoordinate);
-    }
-  }
 }

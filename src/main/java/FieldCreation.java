@@ -1,5 +1,7 @@
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -43,6 +45,8 @@ class FieldCreation {
 
     this.displayBase = new Pane();
     displayBase.setPrefSize(displayHeight, displayWidth);
+
+    displayBase.setOnMouseClicked(this::onMouseClick);
 
     numberOfTileOpen = verticalSize * widthSize - numberOfBombs;
     fieldTiles = new Tile[verticalSize][widthSize];
@@ -187,6 +191,30 @@ class FieldCreation {
 
   public Parent getDisplayBase() {
     return displayBase;
+  }
+
+  private void onMouseClick(MouseEvent event) {
+    Object obj = event.getTarget();
+    if (!(obj instanceof Tile)) {
+      return;
+    }
+    Tile clickedTile = (Tile)obj;
+    int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
+    if (event.getButton() == MouseButton.PRIMARY) {
+      // At first id does not touch the bomb
+      if (manipulateBombs.firstClick) {
+        openTilesOfZero(verticalIdx, widthIdx);
+        return;
+      }
+
+      if (clickedTile.getSurroundBombs() == 9) {
+        showAll(true);
+      } else {
+        openTilesOfZero(verticalIdx, widthIdx);
+      }
+    } else {
+      rightClick(verticalIdx, widthIdx);
+    }
   }
 
   class ManipulateBombs {
