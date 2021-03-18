@@ -8,13 +8,12 @@ import javafx.scene.text.Text;
 
 class Tile extends StackPane {
 
-  private int surroundBombs;
-  private boolean isFlagEnabled;
   final private int verticalIdx, widthIdx;
+  private int surroundBombs;
+  private boolean isFlagEnabled, isOpen;
 
   Text tileContentText = new Text();
   Integer titleInText;
-  Boolean tileOpenCheck;
   Rectangle tileBorder;
   private FieldCreation field;
 
@@ -22,9 +21,12 @@ class Tile extends StackPane {
     this.field = field;
     this.verticalIdx = verticalIdx;
     this.widthIdx = widthIdx;
+    isFlagEnabled = false;
+    isOpen = false;
+
+
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
     titleInText = tile;
-    tileOpenCheck = false;
     tileBorder.setFill(null);
     tileBorder.setStroke(Color.BLACK);
     tileContentText.setText("");
@@ -93,7 +95,7 @@ class Tile extends StackPane {
   }
 
   public void open() {
-    tileOpenCheck = true;
+    isOpen = true;
     if (surroundBombs == 9) {
       if (isFlagEnabled) {
         tileBorder.setFill(Color.GREENYELLOW);
@@ -108,5 +110,8 @@ class Tile extends StackPane {
     tileContentText.setText(String.valueOf(surroundBombs));
   }
 
-
+  // open state
+  public boolean getTileState() {
+    return isOpen;
+  }
 }

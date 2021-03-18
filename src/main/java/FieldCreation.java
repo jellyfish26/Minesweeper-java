@@ -6,6 +6,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.Random;
 
 
@@ -14,13 +17,13 @@ class FieldCreation {
   final private int verticalSize, widthSize;
   final double rectangleLength;
   final Pane displayBase;
+  private boolean isGameStarted;
 
   Tile[][] fieldTiles;
   Stage nowStage;
   int numberOfTileOpen;
   StopWatch stopWatch = new StopWatch();
   final int BOMB = 9;
-  ManipulateBombs manipulateBombs;
   Text remainBombs;
   int numberOfBombs;
   int numberOfFlags = 0;
@@ -42,6 +45,8 @@ class FieldCreation {
     this.widthSize = widthSize;
     this.numberOfBombs = numberOfBombs;
     this.rectangleLength = rectangleLength;
+    
+    isGameStarted = false;
 
     this.displayBase = new Pane();
     displayBase.setPrefSize(displayHeight, displayWidth);
@@ -58,13 +63,6 @@ class FieldCreation {
         fieldTiles[verticalIdx][widthIdx] = new Tile(0, verticalIdx, widthIdx, this, rectangleLength);
       }
     }
-
-    manipulateBombs = new ManipulateBombs();
-    manipulateBombs.fieldVertical = verticalSize;
-    manipulateBombs.fieldWidth = widthSize;
-    manipulateBombs.SettingBombs(numberOfBombs, -2, -2);
-    manipulateBombs.firstClick = true;
-  
   }
 
   // return true  : this index is verify
@@ -75,31 +73,35 @@ class FieldCreation {
     return true;
   }
 
-  private void tileOpen(int vertical, int width, boolean lose) {
-    if (!checkIdx(vertical, width)) return;
-    if (fieldTiles[vertical][width].getFlagState() && !lose) return;
-    fieldTiles[vertical][width].open();
-  }
+  private void tileOpen(int verticalIdx, int widthIdx) {
+    if (!checkIdx(verticalIdx, widthIdx)) return;
+    Queue<Integer> exploreVertical = new ArrayDeque<>();
+    Queue<Integer> exploreWidth = new ArrayDeque<>();
+    exploreVertical.add(verticalIdx);
+    exploreWidth.add(widthIdx);
 
-  //  Zero tiles open around. and non-zero tiles open
-  void openTilesOfZero(int vertical, int width) {
-    if (!checkIdx(vertical, width)) return;
-    if (manipulateBombs.firstClick) setFirstClick(vertical, width);
-    manipulateBombs.firstClick = false;
-    if (fieldTiles[vertical][width].tileOpenCheck || fieldTiles[vertical][width].getFlagState()) return;
-    tileOpen(vertical, width, false);
-    if (numberOfTileOpen == 0) {
-      showAll(false); // did not click on any bombs (false)
-      return;
-    }
+    while (!exploreVertical.isEmpty()) {
+      int nowVertexIdx = exploreVertical.poll();
+      int nowWidthIdx = exploreWidth.poll();
+      for (int moveVertex = -1; moveVertex <= 1; ++moveVertex) {
+        for (int moveWidth = -1; moveWidth <= 1; ++moveWidth) {
+          int nextVertexIdx = nowVertexIdx + moveVertex;
+          int nextWidthIdx = nowWidthIdx + moveWidth;
+          if (!checkIdx(nextVertexIdx, nextWidthIdx)) {
+            continue;
+          }
+          
+          boolean cannotOpen = false;
+          cannotOpen |= fieldTiles[nextVertexIdx][nextWidthIdx].getTileState();
+          cannotOpen |= (fieldTiles[nextVertexIdx][nextVertexIdx].getSurroundBombs() == 9);
 
-    if (fieldTiles[vertical][width].getSurroundBombs() != 0) {
-      return;
-    }
-      
-    for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
-      for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
-        openTilesOfZero(vertical + verticalCoordinate, width + widthCoordinate);
+          if (cannotOpen) {
+            continue;
+          }
+          fieldTiles[nextVertexIdx][nextWidthIdx].open();
+          exploreVertical.add(nextVertexIdx);
+          exploreWidth.add(nextWidthIdx);
+        }
       }
     }
   }
@@ -108,7 +110,7 @@ class FieldCreation {
     String elapsedTime = stopWatch.stop();
     for (int verticalCoordinate = 0; verticalCoordinate < fieldTiles.length; ++verticalCoordinate) {
       for (int widthCoordinate = 0; widthCoordinate < fieldTiles[verticalCoordinate].length; ++widthCoordinate) {
-        tileOpen(verticalCoordinate, widthCoordinate, clickBomb);
+        tileOpen(verticalCoordinate, widthCoordinate);
       }
     }
     // System.out.println("finish " + clickBomb);
@@ -132,7 +134,7 @@ class FieldCreation {
 
   // flag install(establish)
   void rightClick(int vertical, int width) {
-    if (fieldTiles[vertical][width].tileOpenCheck) return;
+    if (fieldTiles[vertical][width].getTileState()) return;
     if (!fieldTiles[vertical][width].getFlagState()) {
       ++numberOfFlags;
       fieldTiles[vertical][width].setFlag();
@@ -144,26 +146,29 @@ class FieldCreation {
     remainBombs.setText(Integer.toString(numberOfBombs - numberOfFlags));
   }
 
-  private void setFirstClick(int vertical, int width) {
-    int bombCount = 0;
-    if (fieldTiles[vertical][width].getSurroundBombs() == 0) {
+  private void onMouseClick(MouseEvent event) {
+    Object obj = event.getTarget();
+    if (!(obj instanceof Tile)) {
       return;
     }
-    fieldTiles[vertical][width].titleInText = 0;
-    for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
-      for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
-        try {
-          int aroundBomb = fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].getSurroundBombs();
-          if (aroundBomb >= 9) {
-            manipulateBombs.removeBomb(vertical + verticalCoordinate, width + widthCoordinate);
-            ++bombCount;
-          }
-        } catch (IndexOutOfBoundsException e) {
-          // nothing to do
-        }
+    Tile clickedTile = (Tile)obj;
+    int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
+    if (event.getButton() == MouseButton.PRIMARY) {
+      // At first id does not touch the bomb
+      if (!isGameStarted) {
+        tileOpen(verticalIdx, widthIdx);
+        isGameStarted = true;
+        return;
       }
+
+      if (clickedTile.getSurroundBombs() == 9) {
+        showAll(true);
+      } else {
+        tileOpen(verticalIdx, widthIdx);
+      }
+    } else {
+      rightClick(verticalIdx, widthIdx);
     }
-    manipulateBombs.SettingBombs(bombCount, vertical, width);
   }
 
   public void AddTileToPane() {
@@ -191,95 +196,5 @@ class FieldCreation {
 
   public Parent getDisplayBase() {
     return displayBase;
-  }
-
-  private void onMouseClick(MouseEvent event) {
-    Object obj = event.getTarget();
-    if (!(obj instanceof Tile)) {
-      return;
-    }
-    Tile clickedTile = (Tile)obj;
-    int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
-    if (event.getButton() == MouseButton.PRIMARY) {
-      // At first id does not touch the bomb
-      if (manipulateBombs.firstClick) {
-        openTilesOfZero(verticalIdx, widthIdx);
-        return;
-      }
-
-      if (clickedTile.getSurroundBombs() == 9) {
-        showAll(true);
-      } else {
-        openTilesOfZero(verticalIdx, widthIdx);
-      }
-    } else {
-      rightClick(verticalIdx, widthIdx);
-    }
-  }
-
-  class ManipulateBombs {
-    int fieldVertical;
-    int fieldWidth;
-    boolean firstClick = false;
-
-    private void removeBomb(int vertical, int width) {
-      int bombCount = 0;
-      for (int verticalCoordinate = -1; verticalCoordinate <= 1; ++verticalCoordinate) {
-        for (int widthCoordinate = -1; widthCoordinate <= 1; ++widthCoordinate) {
-          try {
-            if (verticalCoordinate == 0 && widthCoordinate == 0) continue;
-            int aroundBomb = fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].getSurroundBombs();
-            if (aroundBomb >= 9) {
-              ++bombCount;
-            } else {
-              fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].setSurroundBombs(aroundBomb - 1);
-              fieldTiles[vertical + verticalCoordinate][width + widthCoordinate].titleInText = aroundBomb - 1; // A tile instance has already been created.
-            }
-          } catch (IndexOutOfBoundsException e) {
-            // nothing to do
-          }
-        }
-      }
-      fieldTiles[vertical][width].setSurroundBombs(bombCount);
-      fieldTiles[vertical][width].titleInText = bombCount;
-    }
-
-    // not prohibited input is -2
-    void SettingBombs(int numberOfBombs, int prohibitedVerticalCoordinate, int prohibitedWidthCoordinate) {
-      Random randomCoordinate = new Random();
-      for (int setting = 0; setting < numberOfBombs; ++setting) {
-        // System.out.println(fieldVertical);
-        int bombVerticalCoordinate = randomCoordinate.nextInt(fieldVertical);
-        int bombWidthCoordinate = randomCoordinate.nextInt(fieldWidth);
-        boolean prohibitedVerticalCheck = prohibitedVerticalCoordinate -1 <= bombVerticalCoordinate && bombVerticalCoordinate <= prohibitedVerticalCoordinate + 1;
-        boolean prohibitedWidthCheck = prohibitedWidthCoordinate -1 <= bombWidthCoordinate && bombWidthCoordinate <= prohibitedWidthCoordinate + 1;
-        if (fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].getSurroundBombs() == BOMB || (prohibitedVerticalCheck & prohibitedWidthCheck)) {
-          --setting; // A bomb has alread been installed
-        } else {
-          fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].setSurroundBombs(BOMB);
-          if (firstClick) fieldTiles[bombVerticalCoordinate][bombWidthCoordinate].titleInText = 9; // It is checking whether a tile instance has been created.
-          CountUpAroundBomb(bombVerticalCoordinate, bombWidthCoordinate);
-        }
-      }
-    }
-
-    private void CountUpAroundBomb(int setVerticalCoordinate, int setWidthCoordinate) {
-      //  1 1 1
-      //  1 B 1
-      //  1 1 1
-      for (int vertical = -1; vertical <= 1; vertical++) {
-        for (int width = -1; width <= 1; width++) {
-          try {
-            int aroundBomb = fieldTiles[vertical + setVerticalCoordinate][width + setWidthCoordinate].getSurroundBombs();
-            if (aroundBomb != BOMB) {
-              fieldTiles[vertical + setVerticalCoordinate][width + setWidthCoordinate].setSurroundBombs(aroundBomb + 1);
-              if (firstClick) fieldTiles[setVerticalCoordinate + vertical][setWidthCoordinate + width].titleInText = aroundBomb;
-            }
-          } catch (IndexOutOfBoundsException e) {
-            // nothing to do
-          }
-        }
-      }
-    }
   }
 }
