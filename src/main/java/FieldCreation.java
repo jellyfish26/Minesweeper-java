@@ -8,8 +8,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 
 
 class FieldCreation {
@@ -18,14 +20,13 @@ class FieldCreation {
   final double rectangleLength;
   final Pane displayBase;
   private boolean isGameStarted;
+  private final int bombNum;
 
   Tile[][] fieldTiles;
   Stage nowStage;
   int numberOfTileOpen;
   StopWatch stopWatch = new StopWatch();
-  final int BOMB = 9;
   Text remainBombs;
-  int numberOfBombs;
   int numberOfFlags = 0;
 
   // By using instances, we do not operate GC and operate applications with minimal memory.
@@ -35,7 +36,7 @@ class FieldCreation {
               MineSweeper usedMineSweeper,
               int verticalSize,
               int widthSize,
-              int numberOfBombs,
+              int bombNum,
               int displayHeight,
               int displayWidth,
               double rectangleLength) {
@@ -43,7 +44,7 @@ class FieldCreation {
     this.usedMineSweeper = usedMineSweeper;
     this.verticalSize = verticalSize;
     this.widthSize = widthSize;
-    this.numberOfBombs = numberOfBombs;
+    this.bombNum = bombNum;
     this.rectangleLength = rectangleLength;
     
     isGameStarted = false;
@@ -53,16 +54,17 @@ class FieldCreation {
 
     displayBase.setOnMouseClicked(this::onMouseClick);
 
-    numberOfTileOpen = verticalSize * widthSize - numberOfBombs;
+    numberOfTileOpen = verticalSize * widthSize - bombNum;
     fieldTiles = new Tile[verticalSize][widthSize];
     stopWatch.start();
-    remainBombs = new Text(Integer.toString(numberOfBombs));
+    remainBombs = new Text(Integer.toString(bombNum));
 
     for (int verticalIdx = 0; verticalIdx < verticalSize; ++verticalIdx) {
       for (int widthIdx = 0; widthIdx < widthSize; ++widthIdx) {
-        fieldTiles[verticalIdx][widthIdx] = new Tile(0, verticalIdx, widthIdx, this, rectangleLength);
+        fieldTiles[verticalIdx][widthIdx] = new Tile(0, verticalIdx, widthIdx, rectangleLength);
       }
     }
+    initBomb();
   }
 
   // return true  : this index is verify
@@ -71,6 +73,31 @@ class FieldCreation {
     if (verticalIdx < 0 || verticalIdx >= verticalSize) return false;
     if (widthIdx < 0 || widthIdx >= widthSize) return false;
     return true;
+  }
+
+  private void initBomb() {
+    List<Tile> tiles = new ArrayList<>(verticalSize * widthSize);
+    for (int verticalIdx = 0; verticalIdx < verticalSize; ++verticalIdx) {
+      for (int widthIdx = 0; widthIdx < widthSize; ++widthIdx) {
+        tiles.add(fieldTiles[verticalIdx][widthIdx]);
+      }
+    }
+    Collections.shuffle(tiles);
+    for (int cnt = 0; cnt < bombNum; ++cnt) {
+      Tile now = tiles.get(cnt);
+      now.setBomb();
+      // count up surrond
+      for (int moveVertical = -1; moveVertical <= 1; ++moveVertical) {
+        for (int moveWidth = -1; moveWidth <= 1; ++moveWidth) {
+          int targetVerticalIdx = moveVertical + now.getVerticalIdx();
+          int targetWidthIdx = moveWidth + now.getWidthIdx();
+          if (!checkIdx(targetVerticalIdx, targetWidthIdx)) {
+            continue;
+          }
+          fieldTiles[targetVerticalIdx][targetWidthIdx].incrementSurroundBombs();
+        }
+      }
+    }
   }
 
   private void tileOpen(int verticalIdx, int widthIdx) {
@@ -90,17 +117,22 @@ class FieldCreation {
           if (!checkIdx(nextVertexIdx, nextWidthIdx)) {
             continue;
           }
+          Tile targetTile = fieldTiles[nextVertexIdx][nextWidthIdx];
           
           boolean cannotOpen = false;
-          cannotOpen |= fieldTiles[nextVertexIdx][nextWidthIdx].getTileState();
-          cannotOpen |= (fieldTiles[nextVertexIdx][nextVertexIdx].getSurroundBombs() == 9);
-
+          cannotOpen |= targetTile.getTileState();
+          cannotOpen |= targetTile.getFlagState(); 
+          cannotOpen |= targetTile.getIsBomb();
           if (cannotOpen) {
             continue;
           }
-          fieldTiles[nextVertexIdx][nextWidthIdx].open();
-          exploreVertical.add(nextVertexIdx);
-          exploreWidth.add(nextWidthIdx);
+
+          targetTile.open();
+
+          if (targetTile.getSurroundBombs() == 0) {
+            exploreVertical.add(nextVertexIdx);
+            exploreWidth.add(nextWidthIdx);
+          }
         }
       }
     }
@@ -143,7 +175,7 @@ class FieldCreation {
       fieldTiles[vertical][width].removeFlag();
     }
     if (numberOfFlags < 0) numberOfFlags = 0;
-    remainBombs.setText(Integer.toString(numberOfBombs - numberOfFlags));
+    remainBombs.setText(Integer.toString(bombNum - numberOfFlags));
   }
 
   private void onMouseClick(MouseEvent event) {
@@ -161,7 +193,7 @@ class FieldCreation {
         return;
       }
 
-      if (clickedTile.getSurroundBombs() == 9) {
+      if (clickedTile.getIsBomb()) {
         showAll(true);
       } else {
         tileOpen(verticalIdx, widthIdx);

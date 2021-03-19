@@ -8,21 +8,22 @@ import javafx.scene.text.Text;
 
 class Tile extends StackPane {
 
+
   final private int verticalIdx, widthIdx;
   private int surroundBombs;
-  private boolean isFlagEnabled, isOpen;
+  private boolean isFlagEnabled, isOpen, isBomb;
 
   Text tileContentText = new Text();
   Integer titleInText;
   Rectangle tileBorder;
-  private FieldCreation field;
 
-  Tile (Integer tile, int verticalIdx, int widthIdx, FieldCreation field, double rectangleLength) {
-    this.field = field;
+  Tile (Integer tile, int verticalIdx, int widthIdx, double rectangleLength) {
     this.verticalIdx = verticalIdx;
     this.widthIdx = widthIdx;
     isFlagEnabled = false;
     isOpen = false;
+    isBomb = false;
+    surroundBombs = 0;
 
 
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
@@ -36,8 +37,13 @@ class Tile extends StackPane {
     getChildren().addAll(tileBorder, tileContentText);
   }
 
-  public void setSurroundBombs(int surroundBombs) {
-    this.surroundBombs = surroundBombs;
+
+  public void incrementSurroundBombs() {
+    surroundBombs++;
+  }
+
+  public void decrementSurroundBombs() {
+    surroundBombs--;
   }
 
   public int getSurroundBombs() {
@@ -61,6 +67,7 @@ class Tile extends StackPane {
   public boolean getFlagState() {
     return isFlagEnabled;
   }
+
 
   public int getVerticalIdx() {
     return verticalIdx;
@@ -113,5 +120,17 @@ class Tile extends StackPane {
   // open state
   public boolean getTileState() {
     return isOpen;
+  }
+
+  public void setBomb() {
+    isBomb = true;
+  }
+
+  public void removeBomb() {
+    isBomb = false;
+  }
+
+  public boolean getIsBomb() {
+    return isBomb;
   }
 }
