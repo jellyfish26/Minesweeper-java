@@ -140,12 +140,11 @@ class FieldCreation {
 
   void showAll(boolean clickBomb) {
     String elapsedTime = stopWatch.stop();
-    for (int verticalCoordinate = 0; verticalCoordinate < fieldTiles.length; ++verticalCoordinate) {
-      for (int widthCoordinate = 0; widthCoordinate < fieldTiles[verticalCoordinate].length; ++widthCoordinate) {
-        tileOpen(verticalCoordinate, widthCoordinate);
+    for (int verticalIdx = 0; verticalIdx < verticalSize; ++verticalIdx) {
+      for (int widthIdx = 0; widthIdx < widthSize; ++widthIdx) {
+        fieldTiles[verticalIdx][widthIdx].open();
       }
     }
-    // System.out.println("finish " + clickBomb);
     GenerateDialog result = new GenerateDialog();
     if (clickBomb) {
       if (result.resultDialog("あなたの負けです。", "リザルト") != ButtonType.YES) {

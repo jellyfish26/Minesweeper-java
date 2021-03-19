@@ -103,7 +103,7 @@ class Tile extends StackPane {
 
   public void open() {
     isOpen = true;
-    if (surroundBombs == 9) {
+    if (isBomb) {
       if (isFlagEnabled) {
         tileBorder.setFill(Color.GREENYELLOW);
       } else {
