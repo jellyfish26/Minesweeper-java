@@ -5,14 +5,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-
 
 class FieldCreation {
 
@@ -23,30 +21,18 @@ class FieldCreation {
   private final int bombNum;
 
   Tile[][] fieldTiles;
-  Stage nowStage;
   int numberOfTileOpen;
   StopWatch stopWatch = new StopWatch();
   Text remainBombs;
   int numberOfFlags = 0;
 
-  // By using instances, we do not operate GC and operate applications with minimal memory.
-  MineSweeper usedMineSweeper;
-
-  FieldCreation(Stage nowStage,
-              MineSweeper usedMineSweeper,
-              int verticalSize,
-              int widthSize,
-              int bombNum,
-              int displayHeight,
-              int displayWidth,
-              double rectangleLength) {
-    this.nowStage = nowStage;
-    this.usedMineSweeper = usedMineSweeper;
+  FieldCreation(int verticalSize, int widthSize, int bombNum, int displayHeight, int displayWidth,
+      double rectangleLength) {
     this.verticalSize = verticalSize;
     this.widthSize = widthSize;
     this.bombNum = bombNum;
     this.rectangleLength = rectangleLength;
-    
+
     isGameStarted = false;
 
     this.displayBase = new Pane();
@@ -67,11 +53,13 @@ class FieldCreation {
     initBomb();
   }
 
-  // return true  : this index is verify
+  // return true : this index is verify
   // return false : this index is illegal
   private boolean checkIdx(int verticalIdx, int widthIdx) {
-    if (verticalIdx < 0 || verticalIdx >= verticalSize) return false;
-    if (widthIdx < 0 || widthIdx >= widthSize) return false;
+    if (verticalIdx < 0 || verticalIdx >= verticalSize)
+      return false;
+    if (widthIdx < 0 || widthIdx >= widthSize)
+      return false;
     return true;
   }
 
@@ -101,7 +89,9 @@ class FieldCreation {
   }
 
   private void tileOpen(int verticalIdx, int widthIdx) {
-    if (!checkIdx(verticalIdx, widthIdx)) return;
+    if (!checkIdx(verticalIdx, widthIdx)) {
+      return;
+    }
     Queue<Integer> exploreVertical = new ArrayDeque<>();
     Queue<Integer> exploreWidth = new ArrayDeque<>();
     exploreVertical.add(verticalIdx);
@@ -118,10 +108,10 @@ class FieldCreation {
             continue;
           }
           Tile targetTile = fieldTiles[nextVertexIdx][nextWidthIdx];
-          
+
           boolean cannotOpen = false;
           cannotOpen |= targetTile.getTileState();
-          cannotOpen |= targetTile.getFlagState(); 
+          cannotOpen |= targetTile.getFlagState();
           cannotOpen |= targetTile.getIsBomb();
           if (cannotOpen) {
             continue;
@@ -138,7 +128,7 @@ class FieldCreation {
     }
   }
 
-  void showAll(boolean clickBomb) {
+  void gameEnd(boolean clickBomb) {
     String elapsedTime = stopWatch.stop();
     for (int verticalIdx = 0; verticalIdx < verticalSize; ++verticalIdx) {
       for (int widthIdx = 0; widthIdx < widthSize; ++widthIdx) {
@@ -147,25 +137,21 @@ class FieldCreation {
     }
     GenerateDialog result = new GenerateDialog();
     if (clickBomb) {
-      if (result.resultDialog("あなたの負けです。", "リザルト") != ButtonType.YES) {
+      if (result.resultDialog("You lose...", "Result") != ButtonType.YES) {
         System.exit(0);
       }
     } else {
-      if (result.resultDialog("あなたの勝ちです。(経過時間:" + elapsedTime + ")", "リザルト") != ButtonType.YES) {
+      if (result.resultDialog("You win!! (Elapsed time:" + elapsedTime + ")", "Result") != ButtonType.YES) {
         System.exit(0);
       }
     }
-
-    // For once, in order to make garbage collection work.
-    result = null;
-    fieldTiles = null;
-
-    usedMineSweeper.executionApplication(nowStage);
+    MineSweeper.newGame();
   }
 
   // flag install(establish)
   void rightClick(int vertical, int width) {
-    if (fieldTiles[vertical][width].getTileState()) return;
+    if (fieldTiles[vertical][width].getTileState())
+      return;
     if (!fieldTiles[vertical][width].getFlagState()) {
       ++numberOfFlags;
       fieldTiles[vertical][width].setFlag();
@@ -173,7 +159,8 @@ class FieldCreation {
       --numberOfFlags;
       fieldTiles[vertical][width].removeFlag();
     }
-    if (numberOfFlags < 0) numberOfFlags = 0;
+    if (numberOfFlags < 0)
+      numberOfFlags = 0;
     remainBombs.setText(Integer.toString(bombNum - numberOfFlags));
   }
 
@@ -182,7 +169,7 @@ class FieldCreation {
     if (!(obj instanceof Tile)) {
       return;
     }
-    Tile clickedTile = (Tile)obj;
+    Tile clickedTile = (Tile) obj;
     int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
     if (event.getButton() == MouseButton.PRIMARY) {
       // At first id does not touch the bomb
@@ -193,7 +180,7 @@ class FieldCreation {
       }
 
       if (clickedTile.getIsBomb()) {
-        showAll(true);
+        gameEnd(true);
       } else {
         tileOpen(verticalIdx, widthIdx);
       }
@@ -214,11 +201,11 @@ class FieldCreation {
   }
 
   public void remainText() {
-    Text DISPLAY_TEXT = new Text("残りの爆弾の個数");
-    DISPLAY_TEXT.setLayoutX(1020);
-    DISPLAY_TEXT.setLayoutY(100);
-    DISPLAY_TEXT.setFont(Font.font(20));
-    displayBase.getChildren().addAll(DISPLAY_TEXT);
+    Text display_text = new Text("Remain bombs");
+    display_text.setLayoutX(1020);
+    display_text.setLayoutY(100);
+    display_text.setFont(Font.font(20));
+    displayBase.getChildren().addAll(display_text);
     remainBombs.setLayoutX(1055);
     remainBombs.setLayoutY(150);
     remainBombs.setFont(Font.font(40));

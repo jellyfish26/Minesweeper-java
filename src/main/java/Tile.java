@@ -5,9 +5,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-
 class Tile extends StackPane {
-
 
   final private int verticalIdx, widthIdx;
   private int surroundBombs;
@@ -17,14 +15,13 @@ class Tile extends StackPane {
   Integer titleInText;
   Rectangle tileBorder;
 
-  Tile (Integer tile, int verticalIdx, int widthIdx, double rectangleLength) {
+  Tile(Integer tile, int verticalIdx, int widthIdx, double rectangleLength) {
     this.verticalIdx = verticalIdx;
     this.widthIdx = widthIdx;
     isFlagEnabled = false;
     isOpen = false;
     isBomb = false;
     surroundBombs = 0;
-
 
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
     titleInText = tile;
@@ -36,7 +33,6 @@ class Tile extends StackPane {
     setAlignment(Pos.CENTER);
     getChildren().addAll(tileBorder, tileContentText);
   }
-
 
   public void incrementSurroundBombs() {
     surroundBombs++;
@@ -68,7 +64,6 @@ class Tile extends StackPane {
     return isFlagEnabled;
   }
 
-
   public int getVerticalIdx() {
     return verticalIdx;
   }
@@ -79,24 +74,24 @@ class Tile extends StackPane {
 
   private Color numberOfBombsInColor(int bombNumber) {
     switch (bombNumber) {
-      case 0:
-        return Color.DEEPSKYBLUE;
-      case 1:
-        return Color.BLUE;
-      case 2:
-        return Color.GREEN;
-      case 3:
-        return Color.ORANGE;
-      case 4:
-        return Color.ORANGERED;
-      case 5:
-        return Color.RED;
-      case 6:
-        return Color.MEDIUMVIOLETRED;
-      case 7:
-        return Color.PURPLE;
-      case 8:
-        return Color.INDIGO;
+    case 0:
+      return Color.DEEPSKYBLUE;
+    case 1:
+      return Color.BLUE;
+    case 2:
+      return Color.GREEN;
+    case 3:
+      return Color.ORANGE;
+    case 4:
+      return Color.ORANGERED;
+    case 5:
+      return Color.RED;
+    case 6:
+      return Color.MEDIUMVIOLETRED;
+    case 7:
+      return Color.PURPLE;
+    case 8:
+      return Color.INDIGO;
     }
     return Color.BLACK;
   }

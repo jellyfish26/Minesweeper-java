@@ -8,7 +8,7 @@ class StopWatch {
   String genTimeString(String nameBase, long value) {
     if (value == 1) {
       return String.format(" %d %s", value, nameBase);
-    } else if(value >= 2) {
+    } else if (value >= 2) {
       return String.format(" %d %ss", value, nameBase);
     }
     return "";

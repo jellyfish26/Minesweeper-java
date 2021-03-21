@@ -4,33 +4,33 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MineSweeper extends Application {
-  private Stage nowStage;
-  private final int displayHeight= 1000;
-  private final int displayWidth = displayHeight + 200;
+  private static Stage nowStage;
+  private static final int DISPLAY_HEIGHT = 1000;
+  private static final int DISPLAY_WIDTH = DISPLAY_HEIGHT + 200;
 
   @Override
   public void start(Stage primaryStage) {
-    executionApplication(primaryStage);
+    nowStage = primaryStage;
+    newGame();
   }
 
-  void executionApplication(Stage continuationStage) {
-    nowStage = continuationStage;
+  public static void newGame() {
     Scene scene = new Scene(generateMineSweeperField());
-    nowStage.setTitle("マインスイーパー");
+    nowStage.setTitle("Minesweeper");
     nowStage.setScene(scene);
     nowStage.show();
   }
 
-  private Parent generateMineSweeperField() {
+  static private Parent generateMineSweeperField() {
     GenerateDialog initialSettingDialog = new GenerateDialog();
-    int vertical = initialSettingDialog.InputNumberDialog("縦の長さを入力してください。(4 ~ 400)", "フィールドの設定", 4, 400);
-    // System.out.println(vertical);
-    int width = initialSettingDialog.InputNumberDialog("横の長さを入力してください。(4 ~ 400)", "フィールドの設定", 4, 400);
-    // System.out.println(width);
-    int numberOfBombs = initialSettingDialog.InputNumberDialog("爆弾の個数を入力してください。(1 ~ " + (vertical * width - 10) + ")", "爆弾の設定", 1, vertical * width - 10);
-    // System.out.println(numberOfBombs);
-    double rectangleLength = (double) Math.min(displayHeight, displayWidth) / (double)Math.max(vertical, width);
-    FieldCreation fieldCreation = new FieldCreation(nowStage, this, vertical, width, numberOfBombs, displayHeight, displayWidth, rectangleLength);
+    int vertical = initialSettingDialog.InputNumberDialog("Input vertical length. (4 ~ 400)", "Field Settings", 4, 400);
+    int width = initialSettingDialog.InputNumberDialog("Input width length. (4 ~ 400)", "Field Settings", 4, 400);
+    int numberOfBombs = initialSettingDialog.InputNumberDialog(
+        "Input number of bombs. (1 ~ " + (vertical * width - 10) + ")", "Bomb Settings", 1, vertical * width - 10);
+
+    double rectangleLength = (double) Math.min(DISPLAY_HEIGHT, DISPLAY_WIDTH) / (double) Math.max(vertical, width);
+    FieldCreation fieldCreation = new FieldCreation(vertical, width, numberOfBombs, DISPLAY_HEIGHT, DISPLAY_WIDTH,
+        rectangleLength);
 
     fieldCreation.AddTileToPane();
     fieldCreation.remainText();
