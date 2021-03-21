@@ -23,9 +23,9 @@ public class MineSweeper extends Application {
 
   static private Parent generateMineSweeperField() {
     GenerateDialog initialSettingDialog = new GenerateDialog();
-    int vertical = initialSettingDialog.InputNumberDialog("Input vertical length. (4 ~ 400)", "Field Settings", 4, 400);
-    int width = initialSettingDialog.InputNumberDialog("Input width length. (4 ~ 400)", "Field Settings", 4, 400);
-    int numberOfBombs = initialSettingDialog.InputNumberDialog(
+    int vertical = initialSettingDialog.inputNumberDialog("Input vertical length. (4 ~ 400)", "Field Settings", 4, 400);
+    int width = initialSettingDialog.inputNumberDialog("Input width length. (4 ~ 400)", "Field Settings", 4, 400);
+    int numberOfBombs = initialSettingDialog.inputNumberDialog(
         "Input number of bombs. (1 ~ " + (vertical * width - 10) + ")", "Bomb Settings", 1, vertical * width - 10);
 
     double rectangleLength = (double) Math.min(DISPLAY_HEIGHT, DISPLAY_WIDTH) / (double) Math.max(vertical, width);
