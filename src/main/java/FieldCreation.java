@@ -14,16 +14,16 @@ import java.util.Queue;
 
 class FieldCreation {
 
-  final private int verticalSize, widthSize;
-  final double rectangleLength;
-  final Pane displayBase;
+  private final int verticalSize, widthSize;
+  private final double rectangleLength;
+  private final Pane displayBase;
   private boolean isGameStarted;
   private final int bombNum;
+  private int tileOpendNum;
+  private StopWatch stopWatch = new StopWatch();
+  private Tile[][] fieldTiles;
+  private Text remainBombs;
 
-  Tile[][] fieldTiles;
-  int numberOfTileOpen;
-  StopWatch stopWatch = new StopWatch();
-  Text remainBombs;
   int numberOfFlags = 0;
 
   FieldCreation(int verticalSize, int widthSize, int bombNum, int displayHeight, int displayWidth,
@@ -40,7 +40,7 @@ class FieldCreation {
 
     displayBase.setOnMouseClicked(this::onMouseClick);
 
-    numberOfTileOpen = verticalSize * widthSize - bombNum;
+    tileOpendNum = 0;
     fieldTiles = new Tile[verticalSize][widthSize];
     stopWatch.start();
     remainBombs = new Text(Integer.toString(bombNum));
@@ -51,6 +51,8 @@ class FieldCreation {
       }
     }
     initBomb();
+    addTileToPane();
+    remainText();
   }
 
   // return true : this index is verify
@@ -118,6 +120,7 @@ class FieldCreation {
           }
 
           targetTile.open();
+          tileOpendNum++;
 
           if (targetTile.getSurroundBombs() == 0) {
             exploreVertical.add(nextVertexIdx);
@@ -125,6 +128,10 @@ class FieldCreation {
           }
         }
       }
+    }
+
+    if (tileOpendNum == verticalSize * widthSize - bombNum) {
+      gameEnd(false);
     }
   }
 
@@ -159,16 +166,19 @@ class FieldCreation {
       --numberOfFlags;
       fieldTiles[vertical][width].removeFlag();
     }
-    if (numberOfFlags < 0)
-      numberOfFlags = 0;
     remainBombs.setText(Integer.toString(bombNum - numberOfFlags));
   }
 
   private void onMouseClick(MouseEvent event) {
     Object obj = event.getTarget();
+    if (obj instanceof Text) {
+      Text tmp = (Text)obj;
+      obj = tmp.getParent();
+    }
     if (!(obj instanceof Tile)) {
       return;
     }
+    System.out.println(obj);
     Tile clickedTile = (Tile) obj;
     int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
     if (event.getButton() == MouseButton.PRIMARY) {
@@ -189,7 +199,7 @@ class FieldCreation {
     }
   }
 
-  public void AddTileToPane() {
+  private void addTileToPane() {
     for (int verticalCoordinate = 0; verticalCoordinate < verticalSize; ++verticalCoordinate) {
       for (int widthCoordinate = 0; widthCoordinate < widthSize; ++widthCoordinate) {
         Tile tile = fieldTiles[verticalCoordinate][widthCoordinate];
@@ -200,7 +210,7 @@ class FieldCreation {
     }
   }
 
-  public void remainText() {
+  private void remainText() {
     Text display_text = new Text("Remain bombs");
     display_text.setLayoutX(1020);
     display_text.setLayoutY(100);

@@ -10,10 +10,9 @@ class Tile extends StackPane {
   final private int verticalIdx, widthIdx;
   private int surroundBombs;
   private boolean isFlagEnabled, isOpen, isBomb;
+  private Rectangle tileBorder;
+  private Text tileContentText = new Text();
 
-  Text tileContentText = new Text();
-  Integer titleInText;
-  Rectangle tileBorder;
 
   Tile(Integer tile, int verticalIdx, int widthIdx, double rectangleLength) {
     this.verticalIdx = verticalIdx;
@@ -24,7 +23,6 @@ class Tile extends StackPane {
     surroundBombs = 0;
 
     tileBorder = new Rectangle(rectangleLength, rectangleLength);
-    titleInText = tile;
     tileBorder.setFill(null);
     tileBorder.setStroke(Color.BLACK);
     tileContentText.setText("");
@@ -47,14 +45,14 @@ class Tile extends StackPane {
   }
 
   public void setFlag() {
-    tileBorder.setFill(Color.GREENYELLOW);
     tileContentText.setFill(Color.BLACK);
     tileContentText.setText("F");
+    tileBorder.setFill(Color.GREENYELLOW);
     isFlagEnabled = true;
   }
 
   public void removeFlag() {
-    tileBorder.setFill(Color.WHITE);
+    tileBorder.setFill(null);
     tileContentText.setFill(Color.WHITE);
     tileContentText.setText("");
     isFlagEnabled = false;

@@ -31,9 +31,6 @@ public class MineSweeper extends Application {
     double rectangleLength = (double) Math.min(DISPLAY_HEIGHT, DISPLAY_WIDTH) / (double) Math.max(vertical, width);
     FieldCreation fieldCreation = new FieldCreation(vertical, width, numberOfBombs, DISPLAY_HEIGHT, DISPLAY_WIDTH,
         rectangleLength);
-
-    fieldCreation.AddTileToPane();
-    fieldCreation.remainText();
     return fieldCreation.getDisplayBase();
   }
 }
