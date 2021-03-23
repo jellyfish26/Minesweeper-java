@@ -19,12 +19,12 @@ class FieldCreation {
   private final Pane displayBase;
   private boolean isGameStarted;
   private final int bombNum;
-  private int tileOpendNum;
+  private int tileOpendNum, flagsNum;
   private StopWatch stopWatch = new StopWatch();
   private Tile[][] fieldTiles;
   private Text remainBombs;
 
-  int numberOfFlags = 0;
+  private Tile replaceBombTarget;
 
   FieldCreation(int verticalSize, int widthSize, int bombNum, int displayHeight, int displayWidth,
       double rectangleLength) {
@@ -41,6 +41,7 @@ class FieldCreation {
     displayBase.setOnMouseClicked(this::onMouseClick);
 
     tileOpendNum = 0;
+    flagsNum = 0;
     fieldTiles = new Tile[verticalSize][widthSize];
     stopWatch.start();
     remainBombs = new Text(Integer.toString(bombNum));
@@ -88,6 +89,7 @@ class FieldCreation {
         }
       }
     }
+    replaceBombTarget = tiles.get(bombNum);
   }
 
   private void tileOpen(int verticalIdx, int widthIdx) {
@@ -160,13 +162,13 @@ class FieldCreation {
     if (fieldTiles[vertical][width].getTileState())
       return;
     if (!fieldTiles[vertical][width].getFlagState()) {
-      ++numberOfFlags;
+      ++flagsNum;
       fieldTiles[vertical][width].setFlag();
     } else {
-      --numberOfFlags;
+      --flagsNum;
       fieldTiles[vertical][width].removeFlag();
     }
-    remainBombs.setText(Integer.toString(bombNum - numberOfFlags));
+    remainBombs.setText(Integer.toString(bombNum - flagsNum));
   }
 
   private void onMouseClick(MouseEvent event) {
@@ -178,14 +180,35 @@ class FieldCreation {
     if (!(obj instanceof Tile)) {
       return;
     }
-    System.out.println(obj);
     Tile clickedTile = (Tile) obj;
     int verticalIdx = clickedTile.getVerticalIdx(), widthIdx = clickedTile.getWidthIdx();
     if (event.getButton() == MouseButton.PRIMARY) {
       // At first id does not touch the bomb
       if (!isGameStarted) {
+        if (fieldTiles[verticalIdx][widthIdx].getIsBomb()) {
+          fieldTiles[verticalIdx][widthIdx].removeBomb();
+          replaceBombTarget.setBomb();
+          for (int moveVertical = -1; moveVertical <= 1; ++moveVertical) {
+            for (int moveWitdh = -1; moveWitdh <= 1; ++moveWitdh) {
+              int subTileVerticalIdx = verticalIdx + moveVertical;
+              int subTileWidthIdx = widthIdx + moveWitdh;
+              int addTileVerticalIdx = replaceBombTarget.getVerticalIdx() + moveVertical;
+              int addTileWidthIdx = replaceBombTarget.getWidthIdx() + moveWitdh;
+              if (checkIdx(subTileVerticalIdx, subTileWidthIdx)) {
+                fieldTiles[subTileVerticalIdx][subTileWidthIdx].decrementSurroundBombs();
+              }
+              if (checkIdx(addTileVerticalIdx, addTileWidthIdx)) {
+                fieldTiles[addTileVerticalIdx][addTileWidthIdx].incrementSurroundBombs();
+              }
+            }
+          }
+        }
         tileOpen(verticalIdx, widthIdx);
         isGameStarted = true;
+        return;
+      }
+
+      if (clickedTile.getFlagState()) {
         return;
       }
 
